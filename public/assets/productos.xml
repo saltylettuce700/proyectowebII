@@ -1,0 +1,100 @@
+<productos>
+  <producto>
+    <id>1</id>
+    <nombre>Laptop</nombre>
+    <precio>1200</precio>
+    <imagen>\assets\KarinMarker.png</imagen>
+    <cantidad>30</cantidad>
+    <descripcion>La laptop</descripcion>
+    <tipoProducto>1</tipoProducto>
+    <marca>1</marca>
+  </producto>
+  
+  <producto>
+    <id>2</id>
+    <nombre>Celular</nombre>
+    <precio>800</precio>
+    <imagen>\assets\KarinMarker.png</imagen>
+    <cantidad>30</cantidad>
+    <descripcion>El celular</descripcion>
+    <tipoProducto>2</tipoProducto>
+    <marca>2</marca>
+  </producto>
+  
+  <producto>
+    <id>3</id>
+    <nombre>Tableta</nombre>
+    <precio>600</precio>
+    <imagen>\assets\KarinMarker.png</imagen>
+    <cantidad>30</cantidad>
+    <descripcion>La tableta</descripcion>
+    <tipoProducto>3</tipoProducto>
+    <marca>3</marca>
+  </producto>
+
+  <producto>
+    <id>4</id>
+    <nombre>Tableta</nombre>
+    <precio>600</precio>
+    <imagen>\assets\KarinMarker.png</imagen>
+    <cantidad>30</cantidad>
+    <descripcion>La tableta</descripcion>
+    <tipoProducto>3</tipoProducto>
+    <marca>2</marca>
+  </producto>
+
+  <producto>
+    <id>5</id>
+    <nombre>Tableta</nombre>
+    <precio>600</precio>
+    <imagen>\assets\KarinMarker.png</imagen>
+    <cantidad>30</cantidad>
+    <descripcion>La tableta</descripcion>
+    <tipoProducto>3</tipoProducto>
+    <marca>1</marca>
+  </producto>
+
+  <producto>
+    <id>6</id>
+    <nombre>Tableta</nombre>
+    <precio>600</precio>
+    <imagen>\assets\KarinMarker.png</imagen>
+    <cantidad>30</cantidad>
+    <descripcion>La tableta</descripcion>
+    <tipoProducto>3</tipoProducto>
+    <marca>1</marca>
+  </producto>
+
+  <producto>
+    <id>7</id>
+    <nombre>Tableta</nombre>
+    <precio>600</precio>
+    <imagen>\assets\KarinMarker.png</imagen>
+    <cantidad>30</cantidad>
+    <descripcion>La tableta</descripcion>
+    <tipoProducto>3</tipoProducto>
+    <marca>3</marca>
+  </producto>
+  
+  <producto>
+    <id>8</id>
+    <nombre>Tableta</nombre>
+    <precio>600</precio>
+    <imagen>\assets\KarinMarker.png</imagen>
+    <cantidad>30</cantidad>
+    <descripcion>La tableta</descripcion>
+    <tipoProducto>3</tipoProducto>
+    <marca>2</marca>
+  </producto>
+  
+  <producto>
+    <id>9</id>
+    <nombre>Tableta</nombre>
+    <precio>600</precio>
+    <imagen>\assets\KarinMarker.png</imagen>
+    <cantidad>0</cantidad>
+    <descripcion>La tableta</descripcion>
+    <tipoProducto>3</tipoProducto>
+    <marca>3</marca>
+  </producto>
+</productos>

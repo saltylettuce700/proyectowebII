@@ -1,1 +1,61 @@
-<p>catalogo works!</p>
+<div class="catalogo-container">
+    <!-- 🏠 ENCABEZADO -->
+    <div class="catalogo-header">
+      <a href="/">Home</a> / <span>Catálogo</span>
+    </div>
+  
+    <!-- 📌 TÍTULO Y CANTIDAD DE PRODUCTOS -->
+    <div class="catalogo-title">
+      <h1>All</h1>
+      <span>{{ productosFiltrados.length }} products</span>
+    </div>
+  
+    <!-- 📦 LAYOUT PRINCIPAL (2 COLUMNAS) -->
+    <div class="catalogo-content">
+      
+      <!-- 🎚️ FILTROS (30%) -->
+      <div class="filtros">
+        <h3>En stock</h3>
+        <label>
+          <input type="checkbox" [(ngModel)]="inStock" (change)="onFilterChange()" /> Solo en stock
+        </label>
+      
+        <h3>Tipo de Producto</h3>
+      <div class="checkbox-group">
+        <label *ngFor="let type of productTypes">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="selectedProductTypes[type]" 
+              (change)="onFilterChange()" 
+              [value]="type"
+            /> {{ 'Product Type ' + type }}
+          </label>
+      </div>
+
+      <h3>Marca</h3>
+      <div class="checkbox-group">
+        <label *ngFor="let brand of brands">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="selectedBrands[brand]" 
+              (change)="onFilterChange()" 
+              [value]="brand"
+            /> {{ 'Brand Type ' + brand }}
+          </label>
+      </div>
+    </div>
+      
+  
+      <!-- 🛒 LISTADO DE PRODUCTOS (70%) -->
+      <div class="productos">
+        <div *ngFor="let producto of productosFiltrados" class="producto-card">
+          <img [src]="producto.imagen" alt="{{ producto.nombre }}" />
+          <p>{{ producto.nombre }}</p>
+          <span>${{ producto.precio }}</span>
+          <button class="edit-btn">✏️</button>
+          <button class="delete-btn">🗑️</button>
+        </div>
+      </div>
+
+    </div>
+</div>

@@ -1,1 +1,62 @@
-<p>carrito works!</p>
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>/</span>
+    <span>Catálogo</span>
+</div>
+
+<h1>Tu Carrito</h1>
+
+<table class="cart-table" *ngIf="carrito.length > 0">
+    <thead>
+        <tr>
+            <th>Imagen</th>
+            <th>Producto</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of carrito; let i = index">
+            <td>
+                <img [src]="item.producto.imagen || 'https://via.placeholder.com/70x70'" alt="{{ item.producto.nombre }}" class="product-image">
+            </td>
+            <td>
+                <div class="product-title">{{ item.producto.nombre }}</div>
+                <div class="product-subtitle">{{ item.producto.subtitulo || '' }}</div>
+            </td>
+            <td class="product-description">
+                {{ item.producto.descripcion }}
+            </td>
+            <td class="price">{{ item.producto.precio ? (item.producto.precio | number:'1.2-2') : 'N/A' }} MXN</td>
+            <td>
+                <div class="quantity-control">
+                    <button (click)="reducirProducto(item.producto)">-</button>
+                    <input type="text" [value]="item.cantidad" readonly>
+                    <button (click)="agregarProducto(item.producto)" style="color: #ff6b6b;">+</button>
+                    <button class="trash-btn" (click)="eliminarTodos(item.producto.id)">
+                        <img src="assets/icons8-basura-100.png" alt="Eliminar" class="trash-icon">
+                    </button>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div *ngIf="carrito.length === 0" class="empty-cart">
+    <p>Tu carrito está vacío</p>
+</div>
+
+<div class="total-row" *ngIf="carrito.length > 0">
+    <div class="total-label">Total</div>
+    <div class="total-amount">${{ total.toFixed(2) }} MXN</div>
+</div>
+
+<a href="#" class="checkout-btn" *ngIf="carrito.length > 0">Ir a Pagar</a>
+
+<div class="button-group" *ngIf="carrito.length > 0">
+    <a href="javascript:void(0)" class="xml-btn" (click)="generarXML()">XML</a>
+    <a href="javascript:void(0)" class="continue-btn" (click)="irAlCatalogo()">Seguir Comprando</a>
+</div>
+
+<a routerLink="/catalogo" class="continue-btn" *ngIf="carrito.length === 0">Ir al Catálogo</a>

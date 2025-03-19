@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -8,5 +9,9 @@ import { Component } from '@angular/core';
   standalone: true
 })
 export class NavbarComponent {
+  constructor(private router: Router) {}
 
+  irAlCarrito() {
+    this.router.navigate(['/carrito']);
+  }
 }

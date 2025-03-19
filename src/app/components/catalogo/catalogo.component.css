@@ -82,7 +82,7 @@
     border-radius: 5px;
   }
   
-  .edit-btn, .delete-btn {
+  .edit-btn, .delete-btn, .añadir-btn {
     margin: 5px;
     cursor: pointer;
   }

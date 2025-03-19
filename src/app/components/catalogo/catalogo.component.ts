@@ -92,10 +92,10 @@ filtrarProductos() {
       this.filtrarProductos();
     }
 
-  /*agregarAlCarrito(producto:any){
-    this.carritoService.agregarProducto(producto); //not yet
+  agregarAlCarrito(producto:any){
+    this.carritoService.agregarProducto(producto);
 
-  }*/
+  }
  
   irAlCarrito(){
     this.router.navigate(['/carrito']);

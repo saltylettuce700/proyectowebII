@@ -52,8 +52,9 @@
           <img [src]="producto.imagen" alt="{{ producto.nombre }}" />
           <p>{{ producto.nombre }}</p>
           <span>${{ producto.precio }}</span>
-          <button class="edit-btn">✏️</button>
-          <button class="delete-btn">🗑️</button>
+          <!--<button class="edit-btn">✏️</button> -->
+          <!--<button class="delete-btn">🗑️</button>-->
+          <br><button class="añadir-btn" (click) = "agregarAlCarrito(producto)">Añadir al Carrito</button>
         </div>
       </div>
 

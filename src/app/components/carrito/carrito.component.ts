@@ -79,12 +79,16 @@ export class CarritoComponent {
       cantidad: item.cantidad
     }));
 
-    this.http.post('http://localhost:4242/procesar-pago', { carrito: carritoFormateado })
+    this.http.post('http://localhost:3000/create-checkout-session', { carrito: carritoFormateado })
       .subscribe({
         next: (res: any) => {
           console.log('Pedido procesado con éxito', res);
+
+          if (res.stripe_link) {
+            window.location.href = res.stripe_link;
+          }
           
-          alert(`Pedido creado con ID: ${res.idPedido}`);
+          //alert(`Pedido creado con ID: ${res.idPedido}`);
           this.carritoService.vaciarCarrito();
           this.actualizarCarrito();
         },

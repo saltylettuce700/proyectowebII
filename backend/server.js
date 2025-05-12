@@ -4,6 +4,7 @@ const stripe = require('stripe')(process.env.SK_STRIPE);
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
+const http = require('http');
 
 console.log('Webhook secret:', process.env.WH_STRIPE);
 
@@ -69,49 +70,111 @@ db.connect(err => {
   console.log('Conectado a la base de datos');
 });
 
-app.post('/create-checkout-session', async (req, res) => {
-  const { items } = req.body;
 
-  const price = 2500;
-  const idpedidoxd = 2;
 
-const session = await stripe.checkout.sessions.create({
-    
+async function llamarStripe(idPedido, price, res) {
+  const session = await stripe.checkout.sessions.create({
     customer_email: 'customer@example.com',
     submit_type: 'pay',
     billing_address_collection: 'auto',
-    
-
-    // shipping_address_collection: {
-    //   allowed_countries: ['US', 'CA' , 'MX'],
-    // },
-
-    metadata: {
-      idpedido: idpedidoxd
-
-    },
-
-    line_items: [
-      {
-        price_data: {
-                currency: 'mxn',
-                product_data: {
-                    name: "Pedido Hikari Paper",
-                },
-                unit_amount: price,  
-            },
-            quantity: 1,
+    metadata: { idpedido: idPedido },
+    line_items: [{
+      price_data: {
+        currency: 'mxn',
+        product_data: { name: "Pedido Hikari Paper" },
+        unit_amount: price
       },
-    ],
-
+      quantity: 1
+    }],
     mode: 'payment',
     success_url: `${YOUR_DOMAIN}/success.html`,
     cancel_url: `http://localhost:4200/carrito`,
   });
 
-
   res.redirect(303, session.url);
+}
+
+
+app.post('/create-checkout-session', async (req, res) => {
+  console.log('Body recibido en /create-checkout-session:', req.body);
+
+  const postData = JSON.stringify(req.body);
+
+  const options = {
+    hostname: 'localhost',
+    port: 4242,
+    path: '/procesar-pago',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(postData),
+    }
+  };
+
+  const proxy = http.request(options, (dbres) => {
+    let body = '';
+
+    dbres.on('data', chunk => {
+      body += chunk;
+    });
+
+    dbres.on('end', async () => {
+      try {
+        const data = JSON.parse(body);
+        console.log('Respuesta de /procesar-pago:', data);
+
+        if (dbres.statusCode === 200) {
+
+          
+          const session = await stripe.checkout.sessions.create({
+            customer_email: 'customer@example.com',
+            submit_type: 'pay',
+            billing_address_collection: 'auto',
+            metadata: { idpedido: data.idPedido },
+            line_items: [{
+              price_data: {
+                currency: 'mxn',
+                product_data: { name: "Pedido Hikari Paper" },
+                unit_amount: data.total
+              },
+              quantity: 1
+            }],
+            mode: 'payment',
+            success_url: `${YOUR_DOMAIN}/success.html`,
+            cancel_url: `http://localhost:4200/carrito`,
+          });
+
+          console.log('Respuesta de /procesar-pago:', session.url);
+
+          res.status(200).json({
+            stripe_link: session.url
+          });
+
+          // res.redirect(303, session.url);
+
+
+          //llamarStripe(data.idPedido, data.total, res);
+
+
+          //res.status(200).json({ mensaje: 'Procesado con éxito' });
+        } else {
+          res.status(500).json({ error: 'Error al procesar el pago' });
+        }
+      } catch (err) {
+        res.status(500).json({ error: 'Respuesta inválida del backend' });
+      }
+    });
+  });
+
+  proxy.on('error', (error) => {
+    console.error('Error reenviando petición:', error);
+    res.status(500).json({ error: 'Fallo al reenviar la petición' });
+  });
+
+  proxy.write(postData); // ✅ Envía el JSON
+  proxy.end();           // ✅ Termina la petición
 });
+
 
 app.listen(3000, () => {
   console.log('Servidor iniciado en http://localhost:3000');

@@ -118,7 +118,12 @@ app.post('/procesar-pago', async (req, res) => {
             return res.status(500).send('Error al actualizar totales');
           }
 
-          res.status(200).json({ mensaje: 'Pedido creado correctamente', idPedido });
+          
+          res.status(200).json({ 
+            mensaje: 'Pedido creado correctamente', 
+            idPedido: idPedido,
+            total: Math.ceil(totalFinal * 100)
+          });
         });
       };
 

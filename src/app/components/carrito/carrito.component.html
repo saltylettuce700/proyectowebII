@@ -48,6 +48,16 @@
 </div>
 
 <div class="total-row" *ngIf="carrito.length > 0">
+  <div class="total-label">Subtotal</div>
+  <div class="total-amount">${{ subtotal.toFixed(2) }} MXN</div>
+</div>
+
+<div class="total-row" *ngIf="carrito.length > 0">
+  <div class="total-label">IVA (16%)</div>
+  <div class="total-amount">${{ iva.toFixed(2) }} MXN</div>
+</div>
+
+<div class="total-row" *ngIf="carrito.length > 0">
     <div class="total-label">Total</div>
     <div class="total-amount">${{ total.toFixed(2) }} MXN</div>
 </div>
@@ -67,4 +77,4 @@
     <a href="javascript:void(0)" class="continue-btn" (click)="irAlCatalogo()">Seguir Comprando</a>
 </div>
 
-<a routerLink="/catalogo" class="continue-btn" *ngIf="carrito.length === 0">Ir al Catálogo</a>
+<a href="javascript:void(0)" class="continue-btn" (click)="irAlCatalogo()" *ngIf="carrito.length === 0">Ir al Catálogo</a>

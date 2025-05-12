@@ -13,6 +13,8 @@ import { CatalogoService } from '../../services/catalogo.service';
 })
 export class CarritoComponent {
   carrito: any[] = [];
+  subtotal: number = 0;
+  iva: number = 0;
   total: number = 0;
 
   constructor(
@@ -31,7 +33,9 @@ export class CarritoComponent {
   }
 
   calcularTotal() {
-    this.total = this.carrito.reduce((acc, item) => acc + (item.producto.precio * item.cantidad), 0);
+    this.subtotal = this.carrito.reduce((acc, item) => acc + (item.producto.precio * item.cantidad), 0);
+    this.iva = this.subtotal * 0.16;
+    this.total = this.subtotal + this.iva;
   }
 
   generarXML() {

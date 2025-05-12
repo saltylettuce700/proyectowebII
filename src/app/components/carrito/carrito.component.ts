@@ -3,6 +3,7 @@ import { CarritoService } from '../../services/carrito.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CatalogoService } from '../../services/catalogo.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-carrito',
@@ -20,6 +21,7 @@ export class CarritoComponent {
   constructor(
     private carritoService: CarritoService,
     private catalogoService : CatalogoService,
+    private http: HttpClient,
     private router : Router) {}
 
   ngOnInit() {
@@ -68,5 +70,30 @@ export class CarritoComponent {
   irAlCatalogo(){
     this.router.navigate([''])
   }
+
+  finalizarPedido() {
+    
+    const carrito = this.carritoService.obtenerCarrito();
+    const carritoFormateado = carrito.map(item => ({
+      id_producto: item.producto.id,
+      cantidad: item.cantidad
+    }));
+
+    this.http.post('http://localhost:4242/procesar-pago', { carrito: carritoFormateado })
+      .subscribe({
+        next: (res: any) => {
+          console.log('Pedido procesado con éxito', res);
+          
+          alert(`Pedido creado con ID: ${res.idPedido}`);
+          this.carritoService.vaciarCarrito();
+          this.actualizarCarrito();
+        },
+        error: (err) => {
+          console.error('Error al procesar pedido:', err);
+          alert('Error al crear el pedido');
+        }
+      });
+  }
+
 
 }

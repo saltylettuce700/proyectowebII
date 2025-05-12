@@ -109,4 +109,7 @@ export class CarritoService {
     a.click();
     document.body.removeChild(a);
   }
+  vaciarCarrito() {
+    this.carrito = [];
+  }
 }

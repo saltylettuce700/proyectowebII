@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 export class CatalogoService {
 
   //private xmlUrl = 'assets/productos.xml';
-  private apiUrl = 'http://localhost:3000/api/productos';
+  private apiUrl = 'http://localhost:4242/api/productos';
 
   constructor(private http: HttpClient) { }
 

@@ -54,6 +54,14 @@
 
 <a href="#" class="checkout-btn" *ngIf="carrito.length > 0">Ir a Pagar</a>
 
+
+
+<form action="http://localhost:3000/create-checkout-session" method="POST">
+        <button type="submit" id="checkout-button">Checkout</button>
+
+
+
+
 <div class="button-group" *ngIf="carrito.length > 0">
     <a href="javascript:void(0)" class="xml-btn" (click)="generarXML()">XML</a>
     <a href="javascript:void(0)" class="continue-btn" (click)="irAlCatalogo()">Seguir Comprando</a>

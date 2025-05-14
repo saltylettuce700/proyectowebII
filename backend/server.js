@@ -87,8 +87,9 @@ async function llamarStripe(idPedido, price, res) {
       quantity: 1
     }],
     mode: 'payment',
-    success_url: `${YOUR_DOMAIN}/success.html`,
-    cancel_url: `http://localhost:4200/carrito`,
+    success_url: `http://localhost:4200/carrito?status=success`,
+    cancel_url: `http://localhost:4200/carrito?status=cancel`,
+
   });
 
   res.redirect(303, session.url);
@@ -140,8 +141,8 @@ app.post('/create-checkout-session', async (req, res) => {
               quantity: 1
             }],
             mode: 'payment',
-            success_url: `${YOUR_DOMAIN}/success.html`,
-            cancel_url: `http://localhost:4200/carrito`,
+            success_url: `http://localhost:4200/carrito?status=success`,
+            cancel_url: `http://localhost:4200/carrito?status=cancel`,
           });
 
           console.log('Respuesta de /procesar-pago:', session.url);

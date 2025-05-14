@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CatalogoService } from '../../services/catalogo.service';
 import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-carrito',
@@ -22,11 +23,15 @@ export class CarritoComponent {
     private carritoService: CarritoService,
     private catalogoService : CatalogoService,
     private http: HttpClient,
-    private router : Router) {}
+    private router : Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
+    this.carritoService.cargarCarrito();
     this.actualizarCarrito();
     console.log('Contenido del carrito:', this.carrito);
+    this.verificarEstadoPago();
   }
 
   actualizarCarrito() {
@@ -71,6 +76,27 @@ export class CarritoComponent {
     this.router.navigate([''])
   }
 
+  verificarEstadoPago() {
+  this.route.queryParams.subscribe(params => {
+    const status = params['status'];
+
+    if (status === 'success') {
+      alert('¡Pago exitoso! Gracias por tu compra.');
+      this.carritoService.vaciarCarrito();
+      this.actualizarCarrito();
+      this.router.navigate([], { queryParams: {} }); 
+    }
+
+    // Si es cancelado, no se vacía el carrito
+    if (status === 'cancel') {
+      this.carritoService.cargarCarrito();
+      alert('Pago cancelado. Puedes intentar nuevamente.');
+      
+    }
+  });
+}
+
+
   finalizarPedido() {
     
     const carrito = this.carritoService.obtenerCarrito();
@@ -89,7 +115,7 @@ export class CarritoComponent {
           }
           
           //alert(`Pedido creado con ID: ${res.idPedido}`);
-          this.carritoService.vaciarCarrito();
+          //this.carritoService.vaciarCarrito();
           this.actualizarCarrito();
         },
         error: (err) => {

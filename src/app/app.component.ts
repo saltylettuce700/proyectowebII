@@ -11,8 +11,10 @@ import { FooterComponent } from './shared/footer/footer.component';
   
   template: `
     <app-navbar></app-navbar>
-    <router-outlet></router-outlet>
-    <app-footer></app-footer>
+      
+        <router-outlet></router-outlet>
+      
+  <app-footer></app-footer>
   `,
 })
 export class AppComponent {

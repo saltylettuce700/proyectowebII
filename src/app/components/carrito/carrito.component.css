@@ -5,10 +5,25 @@
     font-family: Arial, sans-serif;
 }
 
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    max-width: 1200px;
+    margin-top: -250px;
+}
+
+router-outlet {
+  flex-shrink: 0px, 0px;
+}
+
+
 body {
     background-color: #ffffff;
-    padding: 20px;
+    padding: 0 20px 20px 20px; /* top 0, right/left/bottom 20px */
 }
+
 
 .breadcrumb {
     display: flex;

@@ -12,14 +12,16 @@ export class CarritoService {
     this.obtenerCarrito();
   }
 
-  /*private guardarCarrito() {
+  private guardarCarrito() {
     localStorage.setItem('carrito', JSON.stringify(this.carrito));
-  }*/
+  }
 
-  /*private cargarCarrito() {
-    const carritoGuardado = localStorage.getItem('carrito');
-    this.carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
-  }*/
+  cargarCarrito() {
+    const data = localStorage.getItem('carrito');
+    if (data) {
+      this.carrito = JSON.parse(data);
+    }
+  }
 
   obtenerCarrito() {
     return [...this.carrito]; // Copia para evitar referencias directas
@@ -32,6 +34,7 @@ export class CarritoService {
     } else {
       this.carrito.push({ producto: { ...producto, precio: Number(producto.precio) }, cantidad: 1 });
     }
+    this.guardarCarrito();
   }
 
   reducirProducto(producto: any) {
@@ -43,10 +46,13 @@ export class CarritoService {
         this.carrito.splice(index, 1); // Eliminar si la cantidad llega a 0
       }
     }
+
+    this.guardarCarrito();
   }
 
   eliminarTodosDeUnProducto(id: number) {
     this.carrito = this.carrito.filter(item => item.producto.id !== id);
+    this.guardarCarrito();
   }
 
   generarXML(): string {
@@ -111,5 +117,6 @@ export class CarritoService {
   }
   vaciarCarrito() {
     this.carrito = [];
+    localStorage.removeItem('carrito');
   }
 }

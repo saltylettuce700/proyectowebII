@@ -11,7 +11,7 @@
     padding-left: 5vw;
     padding-right: 5vw;
     max-width: 1200px;
-    margin-top: -250px;
+    padding-top:3%;
 }
 
 router-outlet {
@@ -184,8 +184,13 @@ h1 {
 }
 
 .empty-cart {
-    text-align: center;
-    padding: 50px 0;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 1rem;
     color: #666;
     font-size: 18px;
 }

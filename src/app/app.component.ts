@@ -16,6 +16,8 @@ import { FooterComponent } from './shared/footer/footer.component';
       
   <app-footer></app-footer>
   `,
+
+  
 })
 export class AppComponent {
   title = 'proyectowebII';

@@ -18,7 +18,10 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule,FormsModule],
   templateUrl: './catalogo.component.html',
   styleUrl: './catalogo.component.css',
-  standalone: true
+  standalone: true,
+  
+
+  
 })
 export class CatalogoComponent implements OnInit{
   productos : any[] = [];

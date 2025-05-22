@@ -33,9 +33,8 @@ app.get('/api/productos', (req, res) => {
            p.descripcion,
            p.tipo_producto AS tipoProducto,
            p.marca,
-           COALESCE(i.cantidad, 0) AS cantidad
+           p.cantidad AS cantidad
     FROM producto p
-    LEFT JOIN inventario i ON i.producto = p.id_producto
   `;
   db.query(query, (err, results) => {
     if (err) {

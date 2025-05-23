@@ -38,14 +38,7 @@
     <!-- Nivel inferior -->
     <div class="nav-bottom">
       <div class="nav-links">
-        <a href="#">Catálogo</a>
-        <a href="#">Stickers</a>
-        <a href="#">Lápices</a>
-        <a href="#">Plumones</a>
-        <a href="#">Plumas</a>
-        <a href="#">Cintas</a>
-        <a href="#">Inventario</a>
-        <a href="#">Sobre Nosotros</a>
+        <a *ngFor="let enlace of enlaces" [routerLink]="enlace.url">{{ enlace.texto }}</a>
       </div>
     </div>
   </nav>

@@ -134,6 +134,38 @@ app.post('/procesar-pago', async (req, res) => {
   });
 });
 
+
+const crypto = require('crypto');
+
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) return res.status(400).json({ error: 'Faltan campos' });
+
+  const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
+  const query = `SELECT * FROM usuario WHERE email = ? AND password = ?`;
+  db.query(query, [email, hashedPassword], (err, results) => {
+    if (err) {
+      console.error('Error en la consulta:', err);
+      return res.status(500).send('Error del servidor');
+    }
+
+    if (results.length === 0) {
+      return res.status(401).json({ error: 'Email o contraseña incorrectos' });
+    }
+
+    const usuario = results[0];
+    res.status(200).json({ 
+      mensaje: 'Login exitoso', 
+      email: usuario.email, 
+      rol: usuario.rol 
+    });
+
+    //res.status(200).json({ mensaje: 'Login exitoso', usuario: results[0].email });
+  });
+});
+
 // Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

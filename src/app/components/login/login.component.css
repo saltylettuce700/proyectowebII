@@ -46,6 +46,21 @@ input {
   font-size: 18px;
 }
 
+input.error {
+  border: 2px solid red;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+form {
+  all: unset; /* Remueve todos los estilos por defecto del form */
+  display: contents; /* Hace que el form "desaparezca" en términos de layout */
+}
+
 .login-button {
   background-color: #333;
   color: white;
@@ -160,4 +175,8 @@ input {
   to {
     left: 100%;
   }
+
+  
 }
+
+

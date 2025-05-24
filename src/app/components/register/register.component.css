@@ -3,14 +3,15 @@
 }
 
 body, html {
-  margin: 0;
-  padding: 0;
+  height: auto;
+  min-height: 100vh;
+  overflow-y: auto;
   font-family: 'Inter', sans-serif;
 }
 
 .container {
   display: flex;
-  height: 100vh;
+  min-height: 50vh;
 }
 
 .side-panel {
@@ -20,7 +21,7 @@ body, html {
 
 .register-form {
   flex: 1;
-  padding: 80px;
+  padding: 0px 80px 80px 10px;
   display: flex;
   font-family: 'Inter';
   flex-direction: column;
@@ -30,7 +31,7 @@ body, html {
 
 .register-form h1 {
   font-size: 40px;
-  margin-bottom: 30px;
+  margin: 0 0 20px 0;
   font-weight: bold;
   color: #333;
 }
@@ -109,6 +110,10 @@ input {
   animation: shine 1.5s ease-out infinite;
 }
 
+input.error {
+  border: 2px solid red;
+}
+
 .button::before {
   content: "";
   position: absolute;
@@ -137,4 +142,5 @@ input {
   to {
     left: 100%;
   }
+  
 }

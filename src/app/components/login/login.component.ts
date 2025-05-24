@@ -71,4 +71,36 @@ export class LoginComponent {
   irARegistro() {
     this.router.navigate(['/registro']);
   }
+
+    recuperarContrasena() {
+    const email = this.loginForm.get('email')?.value;
+
+    this.errorEmail = '';
+
+    if (!email) {
+      this.errorEmail = 'Por favor ingresa tu correo para recuperar la contraseña';
+      return;
+    }
+
+    if (this.loginForm.get('email')?.invalid) {
+      this.errorEmail = 'Ingresa un correo válido';
+      return;
+    }
+
+    // Llamar a backend para validar si el email está registrado y enviar link
+    this.http.post<any>('http://localhost:4242/api/recuperar-contrasena', { email }).subscribe({
+      next: (res) => {
+        // Aquí asumes que el backend responde con éxito si el correo existe
+        alert('Si el correo está registrado, se ha enviado un enlace de recuperación.');
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          this.errorEmail = 'El correo no está registrado en el sistema';
+        } else {
+          alert('Error al procesar la solicitud. Intenta más tarde.');
+        }
+      }
+    });
+  }
+
 }

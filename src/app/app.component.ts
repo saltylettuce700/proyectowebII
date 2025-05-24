@@ -24,8 +24,10 @@ export class AppComponent {
     constructor(private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
+        const url = event.urlAfterRedirects;
         const rutasSinNav = ['/', '/registro'];
-        this.mostrarNavbarFooter = !rutasSinNav.includes(event.urlAfterRedirects);
+        const rutaCambiaPassword = url.startsWith('/cambiopassword');
+        this.mostrarNavbarFooter = !rutasSinNav.includes(url) && !rutaCambiaPassword;
       }
     });
   }

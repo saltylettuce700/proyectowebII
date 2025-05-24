@@ -11,7 +11,7 @@
       <input id="password" type="password" [ngClass]="{'error': errorPassword}" formControlName="password" placeholder="••••••••" />
       <div class="error-message" *ngIf="errorPassword">{{ errorPassword }}</div>
       </form>
-      <!-- From Uiverse.io by satyamchaudharydev --> 
+      
       <button class="button" (click)="iniciarSesion()" style="margin-bottom: 10px;">
   <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
     <path
@@ -22,7 +22,9 @@
   </svg>
 </button>
 
-<p class="forgot-text">Olvidé mi Contraseña</p>
+<p class="forgot-text" (click)="recuperarContrasena()" style="cursor:pointer; color:#2308b9; text-decoration: underline;">
+  Olvidé mi Contraseña
+</p>
     
 
     <p class="register-text">¿No tienes cuenta?</p>

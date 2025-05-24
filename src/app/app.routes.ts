@@ -3,6 +3,7 @@ import { CatalogoComponent } from './components/catalogo/catalogo.component';
 import { CarritoComponent } from './components/carrito/carrito.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { CambiopasswordComponent } from './components/cambiopassword/cambiopassword.component';
 
 
 export const routes: Routes = [
@@ -13,5 +14,6 @@ export const routes: Routes = [
     {path: '', component : LoginComponent},
     {path: 'registro', component : RegisterComponent},
     {path: 'carrito', component : CarritoComponent},
-    {path: 'catalogo', component : CatalogoComponent}
+    {path: 'catalogo', component : CatalogoComponent},
+    { path: 'cambiopassword', component: CambiopasswordComponent }
 ];

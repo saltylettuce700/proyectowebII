@@ -192,6 +192,68 @@ app.post('/api/register', (req, res) => {
   });
 });
 
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'dafely306@gmail.com',
+    pass: 'motq dqcg mnjc himc'   
+  }
+});
+
+app.post('/api/reset-password', (req, res) => {
+  const { email, nuevaPassword } = req.body;
+
+  if (!email || !nuevaPassword) {
+    return res.status(400).json({ error: 'Faltan datos' });
+  }
+
+  const hashedPassword = crypto.createHash('sha256').update(nuevaPassword).digest('hex');
+
+  const updateQuery = `UPDATE usuario SET password = ? WHERE email = ?`;
+  db.query(updateQuery, [hashedPassword, email], (err, result) => {
+    if (err) return res.status(500).json({ error: 'Error al actualizar contraseña' });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Correo no registrado' });
+    }
+
+    res.json({ mensaje: 'Contraseña actualizada correctamente' });
+  });
+});
+
+app.post('/api/recuperar-contrasena', (req, res) => {
+  const { email } = req.body;
+
+  if (!email) return res.status(400).json({ error: 'Email requerido' });
+
+  const resetLink = `http://localhost:4200/cambiopassword?email=${encodeURIComponent(email)}`;
+
+  const mailOptions = {
+    from: 'dafely306@gmail.com',
+    to: email,
+    subject: 'Recuperar contraseña',
+    html: `<div style="font-family: Arial, sans-serif; text-align: center;">
+      <h2>¿Olvidaste tu contraseña?</h2>
+      <p>Haz clic en el siguiente enlace para restablecerla:</p>
+      <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+        Cambiar contraseña
+      </a>
+      <p style="margin-top: 20px;">Si tú no solicitaste este correo, puedes ignorarlo.</p>
+    </div>
+  `
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error al enviar correo:', error);
+      return res.status(500).json({ error: 'No se pudo enviar el correo' });
+    }
+
+    res.json({ mensaje: 'Correo enviado exitosamente' });
+  });
+});
+
 // Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

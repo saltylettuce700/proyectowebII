@@ -166,6 +166,32 @@ app.post('/api/login', (req, res) => {
   });
 });
 
+app.post('/api/register', (req, res) => {
+  const { nombre, apellido, email, password, direccion, cp } = req.body;
+
+  if (!nombre || !apellido || !email || !password || !direccion || !cp) {
+    return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+  }
+
+  const checkEmailQuery = 'SELECT * FROM usuario WHERE email = ?';
+  db.query(checkEmailQuery, [email], (err, results) => {
+    if (err) return res.status(500).json({ error: 'Error en la base de datos' });
+    if (results.length > 0) return res.status(409).json({ error: 'El correo ya está registrado' });
+
+    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+    const insertQuery = `
+      INSERT INTO usuario (nombre, apellido, email, password, direccion, cp, rol)
+      VALUES (?, ?, ?, ?, ?, ?, 'usuario')
+    `;
+
+    db.query(insertQuery, [nombre, apellido, email, hashedPassword, direccion, cp], (err) => {
+      if (err) return res.status(500).json({ error: 'No se pudo registrar' });
+
+      return res.status(201).json({ mensaje: 'Registro exitoso', email: email, rol: 'cliente' });
+    });
+  });
+});
+
 // Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

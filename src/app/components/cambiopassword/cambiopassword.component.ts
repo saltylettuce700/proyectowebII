@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NgClass } from '@angular/common';
+import { CambiopasswordService } from '../../services/cambiopassword.service';
 
 @Component({
   selector: 'app-cambiopassword',
@@ -21,7 +21,7 @@ export class CambiopasswordComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private http: HttpClient
+    private cambiopasswordService: CambiopasswordService
   ) {}
 
   ngOnInit(): void {
@@ -33,7 +33,7 @@ export class CambiopasswordComponent implements OnInit {
       password: ['', [
         Validators.required,
         Validators.minLength(8),
-        Validators.pattern(/^(?=.*[A-Z])(?=.*\d).{8,}$/) // Mínimo 8, 1 mayúscula, 1 número
+        Validators.pattern(/^(?=.*[A-Z])(?=.*\d).{8,}$/)
       ]],
       confirmPassword: ['', Validators.required]
     });
@@ -61,13 +61,10 @@ export class CambiopasswordComponent implements OnInit {
       return;
     }
 
-    this.http.post<any>('http://localhost:4242/api/reset-password', {
-      email: this.email,
-      nuevaPassword: password
-    }).subscribe({
+    this.cambiopasswordService.cambiarPassword(this.email, password).subscribe({
       next: () => {
         alert('Contraseña actualizada correctamente');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       },
       error: err => {
         alert(err.error?.error || 'Error al cambiar contraseña');

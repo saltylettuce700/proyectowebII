@@ -1,27 +1,16 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { NgClass } from '@angular/common';
-import { RegisterComponent } from '../register/register.component';
-
+import { CommonModule, NgClass } from '@angular/common';
+import { LoginService } from '../../services/login.service';
 
 @Component({
   selector: 'app-login',
   imports: [CommonModule, ReactiveFormsModule, NgClass],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
-  standalone: true,
-  /*template: `
-    
-      
-        <router-outlet></router-outlet>
-      
-  
-  `,*/
+  standalone: true
 })
-
 export class LoginComponent {
   loginForm: FormGroup;
   errorEmail = '';
@@ -29,7 +18,7 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
+    private loginService: LoginService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
@@ -50,9 +39,8 @@ export class LoginComponent {
       return;
     }
 
-    this.http.post<any>('http://localhost:4242/api/login', { email, password }).subscribe({
+    this.loginService.login(email, password).subscribe({
       next: (res) => {
-
         sessionStorage.setItem('email', email);
         sessionStorage.setItem('rol', res.rol);
         this.router.navigate(['/catalogo']);
@@ -72,7 +60,7 @@ export class LoginComponent {
     this.router.navigate(['/registro']);
   }
 
-    recuperarContrasena() {
+  recuperarContrasena() {
     const email = this.loginForm.get('email')?.value;
 
     this.errorEmail = '';
@@ -87,11 +75,9 @@ export class LoginComponent {
       return;
     }
 
-    // Llamar a backend para validar si el email está registrado y enviar link
-    this.http.post<any>('http://localhost:4242/api/recuperar-contrasena', { email }).subscribe({
-      next: (res) => {
-        // Aquí asumes que el backend responde con éxito si el correo existe
-        alert('Si el correo está registrado, se ha enviado un enlace de recuperación.');
+    this.loginService.recuperarContrasena(email).subscribe({
+      next: () => {
+        alert('Se ha enviado un enlace de recuperación.');
       },
       error: (err) => {
         if (err.status === 404) {
@@ -102,5 +88,4 @@ export class LoginComponent {
       }
     });
   }
-
 }

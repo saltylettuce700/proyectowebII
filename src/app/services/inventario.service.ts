@@ -17,5 +17,9 @@ export class InventarioService {
     return this.http.get<Producto[]>(this.apiUrl);
   }
 
+  eliminarProducto(id: number) {
+    return this.http.delete(`${this.apiUrl}/productos/${id}`);
+  }
+
   
 }

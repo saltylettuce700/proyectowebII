@@ -1,1 +1,142 @@
-<p>inventario works!</p>
+
+<div class="container">
+  <div class="catalogo-container">
+    <!-- 🏠 ENCABEZADO -->
+    <div class="catalogo-header">
+      <a href="/">Home</a> / <span>Catálogo</span>
+    </div>
+  
+    <!-- 📌 TÍTULO Y CANTIDAD DE PRODUCTOS -->
+    <div class="catalogo-title">
+      <h1>All</h1>
+      <span>{{ productosFiltrados.length }} products</span>
+    </div>
+
+    <!-- Botón para agregar un nuevo producto -->
+    <div class="catalogo-actions">
+    <button class="add-btn" (click)="nuevoProducto()">➕ Agregar nuevo producto</button>
+    </div>
+
+  
+    <!-- 📦 LAYOUT PRINCIPAL (2 COLUMNAS) -->
+    <div class="catalogo-content">
+      
+      <!-- 🎚️ FILTROS (30%) -->
+      <div class="filtros">
+        <h3>En stock</h3>
+        <label>
+          <input type="checkbox" [(ngModel)]="inStock" (change)="onFilterChange()" /> Solo en stock
+        </label>
+      
+        <h3>Tipo de Producto</h3>
+      <div class="checkbox-group">
+        <label *ngFor="let type of productTypes">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="selectedProductTypes[type]" 
+              (change)="onFilterChange()" 
+              [value]="type"
+            /> {{ 'Product Type ' + type }}
+          </label>
+      </div>
+
+      <h3>Marca</h3>
+      <div class="checkbox-group">
+        <label *ngFor="let brand of brands">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="selectedBrands[brand]" 
+              (change)="onFilterChange()" 
+              [value]="brand"
+            /> {{ 'Brand Type ' + brand }}
+          </label>
+      </div>
+    </div>
+      
+  
+      <!-- 🛒 LISTADO DE PRODUCTOS (70%) -->
+      <div class="productos">
+        <div *ngFor="let producto of productosFiltrados" class="producto-card">
+          <img [src]="producto.imagen" alt="{{ producto.nombre }}" />
+          <p>{{ producto.nombre }}</p>
+          <span>${{ producto.precio }}</span>
+          <!--<button class="edit-btn">✏️</button> -->
+          
+          <br>
+          <!-- botón para abrir modal -->
+            <button class="edit-btn" (click)="openModal(producto)">Edit</button>
+
+            <button class="delete-btn">🗑️</button>
+
+            
+        
+            
+
+        </div>
+                
+            
+            
+
+            
+
+        </div>
+      </div>
+
+    </div>
+
+    
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Editar Producto</h2>
+    <form (ngSubmit)="guardarCambios()" #formProducto="ngForm">
+      <div class="form-group">
+        <label>Tipo de producto</label>
+        <input type="text" name="tipo_producto" [(ngModel)]="producto.tipo_producto" required />
+      </div>
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" name="nombre" [(ngModel)]="producto.nombre" required />
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea name="descripcion" [(ngModel)]="producto.descripcion" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Precio</label>
+        <input type="number" name="precio" [(ngModel)]="producto.precio" required />
+      </div>
+      <div class="form-group">
+        <label>URL de imagen</label>
+        <input type="text" name="imagen" [(ngModel)]="producto.imagen" />
+      </div>
+      <div class="form-group">
+        <label>Marca</label>
+        <input type="text" name="marca" [(ngModel)]="producto.marca" />
+      </div>
+      <div class="form-group">
+        <label>Cantidad</label>
+        <input type="number" name="cantidad" [(ngModel)]="producto.cantidad" required />
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-save">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Mensaje de confirmación -->
+<div class="toast" *ngIf="toastVisible">
+  {{ toastMessage }}
+</div>
+
+
+
+
+
+
+
+

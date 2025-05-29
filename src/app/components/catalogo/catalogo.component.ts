@@ -26,6 +26,9 @@ import { FormsModule } from '@angular/forms';
 export class CatalogoComponent implements OnInit{
   productos : any[] = [];
 
+  toastVisible: boolean = false;
+  toastMessage: string = '';
+
   productosFiltrados: Producto[] = []; // Variable para los productos filtrados
 
   productTypes = [1, 2, 3, 4]; // Valores numéricos para tipoProducto
@@ -97,6 +100,7 @@ filtrarProductos() {
 
   agregarAlCarrito(producto:any){
     this.carritoService.agregarProducto(producto);
+    this.mostrarToast('Producto agregado al carrito!');
 
   }
  
@@ -107,6 +111,14 @@ filtrarProductos() {
   irAlInventario(){
     this.router.navigate(['/inventario']);
   }
+
+  mostrarToast(mensaje: string) {
+  this.toastMessage = mensaje;
+  this.toastVisible = true;
+  setTimeout(() => {
+    this.toastVisible = false;
+  }, 3000);
+}
 
 
 }

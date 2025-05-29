@@ -1,11 +1,10 @@
-
 <div class="container">
   <div class="catalogo-container">
     <!-- 🏠 ENCABEZADO -->
     <div class="catalogo-header">
       <a href="/">Home</a> / <span>Catálogo</span>
     </div>
-  
+
     <!-- 📌 TÍTULO Y CANTIDAD DE PRODUCTOS -->
     <div class="catalogo-title">
       <h1>All</h1>
@@ -14,80 +13,64 @@
 
     <!-- Botón para agregar un nuevo producto -->
     <div class="catalogo-actions">
-    <button class="add-btn" (click)="nuevoProducto()">➕ Agregar nuevo producto</button>
+      <button class="add-btn" (click)="nuevoProducto()">➕ Agregar nuevo producto</button>
     </div>
 
-  
     <!-- 📦 LAYOUT PRINCIPAL (2 COLUMNAS) -->
     <div class="catalogo-content">
-      
-      <!-- 🎚️ FILTROS (30%) -->
+
+      <!-- 🎚️ FILTROS MODERNOS -->
       <div class="filtros">
         <h3>En stock</h3>
-        <label>
-          <input type="checkbox" [(ngModel)]="inStock" (change)="onFilterChange()" /> Solo en stock
+        <label class="form-check">
+          <input type="checkbox" [(ngModel)]="inStock" (change)="onFilterChange()" />
+          <span>Solo en stock</span>
         </label>
-      
+
         <h3>Tipo de Producto</h3>
-      <div class="checkbox-group">
-        <label *ngFor="let type of productTypes">
+        <div class="checkbox-group">
+          <label class="form-check" *ngFor="let type of productTypes">
             <input 
               type="checkbox" 
               [(ngModel)]="selectedProductTypes[type]" 
               (change)="onFilterChange()" 
               [value]="type"
-            /> {{ 'Product Type ' + type }}
+            />
+            <span>Product Type {{ type }}</span>
           </label>
-      </div>
+        </div>
 
-      <h3>Marca</h3>
-      <div class="checkbox-group">
-        <label *ngFor="let brand of brands">
+        <h3>Marca</h3>
+        <div class="checkbox-group">
+          <label class="form-check" *ngFor="let brand of brands">
             <input 
               type="checkbox" 
               [(ngModel)]="selectedBrands[brand]" 
               (change)="onFilterChange()" 
               [value]="brand"
-            /> {{ 'Brand Type ' + brand }}
+            />
+            <span>Brand Type {{ brand }}</span>
           </label>
+        </div>
       </div>
-    </div>
-      
-  
-      <!-- 🛒 LISTADO DE PRODUCTOS (70%) -->
+
+      <!-- 🛒 LISTADO DE PRODUCTOS -->
       <div class="productos">
         <div *ngFor="let producto of productosFiltrados" class="producto-card">
           <img [src]="producto.imagen" alt="{{ producto.nombre }}" />
           <p>{{ producto.nombre }}</p>
           <span>${{ producto.precio }}</span>
-          <!--<button class="edit-btn">✏️</button> -->
-          
           <br>
-          <!-- botón para abrir modal -->
-            <button class="edit-btn" (click)="openModal(producto)">Edit</button>
-
-            <button class="delete-btn">🗑️</button>
-
-            
-        
-            
-
-        </div>
-                
-            
-            
-
-            
-
+          <br>
+          <button class="edit-btn" (click)="openModal(producto)">Edit</button>
+          <button class="delete-btn">🗑️</button>
         </div>
       </div>
-
     </div>
-
-    
+  </div>
 </div>
 
-<!-- Modal -->
+<!-- 🧾 MODAL -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <h2>Editar Producto</h2>
@@ -128,15 +111,7 @@
   </div>
 </div>
 
-<!-- Mensaje de confirmación -->
+<!-- ✅ MENSAJE DE CONFIRMACIÓN -->
 <div class="toast" *ngIf="toastVisible">
   {{ toastMessage }}
 </div>
-
-
-
-
-
-
-
-

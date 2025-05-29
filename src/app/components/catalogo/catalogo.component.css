@@ -32,17 +32,24 @@
   
   /* FILTROS (30%) */
   .filtros {
-    width: 30%;
-    background-color: #e0b3ff;
-    padding: 15px;
-    border-radius: 10px;
-  }
-  
-  .filtros h3 {
-    border-bottom: 4px solid white;
-    margin-top: 30px;
-    
-  }
+  width: 100%;
+  max-width: 320px;
+  background: linear-gradient(135deg, #d1a1ff, #f3d9ff);
+  padding: 20px;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.15);
+  font-family: 'Inter';
+  flex-shrink: 0;
+}
+
+.filtros h3 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #5e2b97;
+  margin: 2rem 0 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid #ffffffaa;
+}
   
   .price-inputs {
     display: flex;
@@ -55,17 +62,39 @@
     border: 1px solid #ccc;
   }
   
-  .checkbox-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
-  .checkbox-group label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  /* Grupo de checkboxes */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+/* Etiqueta del checkbox moderna */
+.form-check {
+  background: white;
+  border: 1px solid #e0b3ff;
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.form-check:hover {
+  background-color: #f5e6ff;
+  border-color: #c278ff;
+}
+
+/* Estilo para los checkboxes */
+.form-check input[type="checkbox"] {
+  accent-color: #a734e5;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 4px;
+}
   
   /* PRODUCTOS (70%) */
   .productos {
@@ -90,8 +119,50 @@
     border-radius: 5px;
   }
   
-  .edit-btn, .delete-btn, .añadir-btn {
-    margin: 5px;
-    cursor: pointer;
-  }
   
+  
+
+  .toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: #4caf50;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  font-weight: bold;
+  z-index: 1000;
+  opacity: 1;
+  font-family: 'Inter';
+  animation: fadeOut 3s forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.add-btn,
+.delete-btn {
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 10px; /* Súper redondo */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.add-btn {
+  background-color: #f595cd;
+  color: white;
+  margin-right: 0.5rem;
+}
+
+.add-btn:hover {
+  background-color: #ff58ba;
+  transform: scale(1.05);
+}

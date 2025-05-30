@@ -263,7 +263,7 @@ app.delete('/api/productos/:id', (req, res) => {
       console.error('Error al eliminar producto:', err);
       res.status(500).send('Error al eliminar el producto');
     } else {
-      res.sendStatus(200);
+      res.status(200).json({ mensaje: 'Producto eliminado correctamente' });
     }
   });
 });
@@ -322,7 +322,7 @@ app.get('/api/productos', (req, res) => {
   db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error al obtener productos:', err);
-      return res.status(500).send('Error del servidor');
+      return res.status(500).json('Error del servidor');
     }
     res.json(results);
   });
@@ -330,14 +330,15 @@ app.get('/api/productos', (req, res) => {
 
 
 app.post('/api/productos', (req, res) => {
+  //console.log('Body recibido:', req.body); // <-- Añade esto
   const { tipoProducto, nombre, descripcion, precio, imagen, marca, cantidad } = req.body;
-  const query = `INSERT INTO productos (tipo_producto, nombre, descripcion, precio, imagen, marca, cantidad) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  const query = `INSERT INTO producto (tipo_producto, nombre, descripcion, precio, imagen, marca, cantidad) VALUES (?, ?, ?, ?, ?, ?, ?)`;
   db.query(query, [tipoProducto, nombre, descripcion, precio, imagen, marca, cantidad], (err, result) => {
     if (err) {
       console.error('Error al guardar producto:', err);
       return res.status(500).send('Error al guardar');
     }
-    res.status(201).send('Producto guardado');
+    res.status(200).json({ mensaje: 'Producto guardado' });
   });
 });
 
@@ -345,15 +346,15 @@ app.put('/api/productos/:id', (req, res) => {
   const { tipoProducto, nombre, descripcion, precio, imagen, marca, cantidad } = req.body;
   const id = req.params.id;
   const query = `
-    UPDATE productos 
+    UPDATE producto 
     SET tipo_producto = ?, nombre = ?, descripcion = ?, precio = ?, imagen = ?, marca = ?, cantidad = ?
-    WHERE id = ?`;
+    WHERE id_producto = ?`;
   db.query(query, [tipoProducto, nombre, descripcion, precio, imagen, marca, cantidad, id], (err, result) => {
     if (err) {
       console.error('Error al actualizar producto:', err);
       return res.status(500).send('Error al actualizar');
     }
-    res.send('Producto actualizado');
+    res.status(200).json({ mensaje: 'Producto actualizado con éxito' });
   });
 });
 

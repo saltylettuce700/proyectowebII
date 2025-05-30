@@ -7,7 +7,7 @@ export class Producto{
         public cantidad:number,
         public descripcion:string,
         public tipoProducto:number,
-        public marca:number
+        public marca:string
 
 
     ){}

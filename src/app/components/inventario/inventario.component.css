@@ -74,7 +74,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
-    max-height: 100vh; /* Limita la altura de los productos */
+    max-height: 100vh;/* Limita la altura de los productos */
+    align-items: flex-start;  
     overflow-y: auto; /* Habilita el desplazamiento vertical */
 }
   

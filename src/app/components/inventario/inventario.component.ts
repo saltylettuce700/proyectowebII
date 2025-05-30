@@ -9,155 +9,174 @@ import { Producto } from '../../models/producto';
   selector: 'app-inventario',
   imports: [CommonModule, FormsModule],
   templateUrl: './inventario.component.html',
-  styleUrl: './inventario.component.css',
+  styleUrls: ['./inventario.component.css'],
   standalone: true,
-  
-
 })
 export class InventarioComponent implements OnInit {
-  productos : any[] = [];
+  productos: Producto[] = [];
+  productosFiltrados: Producto[] = [];
+
+  tiposProductoDisponibles: { id_tipo: number; tipo: string }[] = [];
+  marcasDisponibles: string[] = [];
+
+  // Filtros con checkbox: 
+  filtroSoloStock: boolean = false;
+
+  // Diccionarios para checkbox múltiples (tipo producto y marcas)
+  selectedProductTypes: { [key: number]: boolean } = {};
+  selectedBrands: { [key: string]: boolean } = {};
 
   toastVisible: boolean = false;
   toastMessage: string = '';
 
-  productosFiltrados: Producto[] = []; // Variable para los productos filtrados
-  
-    productTypes = [1, 2, 3, 4]; // Valores numéricos para tipoProducto
-    brands = [1, 2, 3, 4]; // Valores numéricos para marca
-  
-    selectedProductTypes: { [key: number]: boolean } = {}; // Filtro numérico
-    selectedBrands: { [key: number]: boolean } = {}; // Filtro numérico
-    inStock: boolean = false; // Filtro para disponibilidad en stock
-  
-     constructor(
-    private inventarioService : InventarioService,
-    private router : Router
-  ){}
+  isModalOpen: boolean = false;
 
-  ngOnInit(): void {
-    this.inventarioService.obtenerProductos().subscribe({
-      next: data => {
-        this.productos = data;
-        this.productosFiltrados = [...this.productos];
-      },
-
-      error: error => {
-        console.error(error.message);
-      }
-    });
-
-    // Inicializa los filtros en falso
-    this.productTypes.forEach(type => this.selectedProductTypes[type] = false);
-    this.brands.forEach(brand => this.selectedBrands[brand] = false);
-
-  }
-
-  // Método para filtrar productos
-filtrarProductos() {
-  console.log('Filtros seleccionados:');
-  console.log('In stock:', this.inStock);
-  console.log('Tipos seleccionados:', this.selectedProductTypes);
-  console.log('Marcas seleccionadas:', this.selectedBrands);
-
-  // Filtrar productos
-  this.productosFiltrados = this.productos.filter((producto) => {
-    // Filtrar por existencia en stock
-    const inStockFilter = this.inStock ? producto.cantidad > 0 : true;
-
-    // Filtrar por tipo de producto
-    const typeFilter = Object.keys(this.selectedProductTypes).some(
-      (key) => this.selectedProductTypes[parseInt(key)] && producto.tipoProducto === parseInt(key)
-    );
-
-    // Filtrar por marca
-    const brandFilter = Object.keys(this.selectedBrands).some(
-      (key) => this.selectedBrands[parseInt(key)] && producto.marca === parseInt(key)
-    );
-
-    // Retornar si el producto cumple con todos los filtros
-    return inStockFilter && typeFilter && brandFilter;
-  });
-
-  console.log('Productos filtrados:', this.productosFiltrados);
-}
-  
-    // Llamado a este método cuando un filtro cambia
-    onFilterChange() {
-      this.filtrarProductos();
-    }
-
-    isModalOpen = false;
-
-  producto = {
-    tipo_producto: '',
+  producto: Producto = {
+    id: -1,
+    tipoProducto: 0,
     nombre: '',
     descripcion: '',
     precio: 0,
     imagen: '',
     marca: '',
-    cantidad: 0
+    cantidad: 0,
   };
 
-  
+  cargando: boolean = false;
+  error: string = '';
+
+  constructor(private inventarioService: InventarioService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.cargarFiltros();
+    this.cargarProductos();
+  }
+
+  cargarFiltros() {
+    this.inventarioService.obtenerTiposProducto().subscribe({
+      next: (tipos) => {
+        this.tiposProductoDisponibles = tipos;
+        // Inicializar selectedProductTypes con false
+        tipos.forEach((tipo) => {
+          this.selectedProductTypes[tipo.id_tipo] = false;
+        });
+      },
+      error: () => (this.error = 'Error cargando tipos de producto'),
+    });
+  }
+
+  cargarProductos() {
+    this.cargando = true;
+    this.error = '';
+
+    this.inventarioService.obtenerProductos().subscribe({
+      next: (productos: any[]) => {
+        this.productos = productos;
+        this.productosFiltrados = productos;
+
+        // Extraer marcas únicas para filtro
+        const marcasSet = new Set(productos.map((p) => p.marca));
+        this.marcasDisponibles = Array.from(marcasSet).sort();
+
+        // Inicializar selectedBrands con false para cada marca
+        this.marcasDisponibles.forEach((marca) => {
+          this.selectedBrands[marca] = false;
+        });
+
+        this.cargando = false;
+      },
+      error: () => {
+        this.error = 'Error cargando productos';
+        this.cargando = false;
+      },
+    });
+  }
+
+  // Filtra productos según filtros activos
+  filtrarProductos() {
+    this.productosFiltrados = this.productos.filter((producto) => {
+      // Filtro stock
+      const pasaStock = this.filtroSoloStock ? producto.cantidad > 0 : true;
+
+      // Filtro tipo producto (al menos uno seleccionado)
+      const tiposSeleccionados = Object.entries(this.selectedProductTypes)
+        .filter(([_, checked]) => checked)
+        .map(([key, _]) => Number(key));
+      const pasaTipo =
+        tiposSeleccionados.length === 0 || tiposSeleccionados.includes(Number(producto.tipoProducto));
+
+      // Filtro marca (al menos una seleccionada)
+      const marcasSeleccionadas = Object.entries(this.selectedBrands)
+        .filter(([_, checked]) => checked)
+        .map(([marca, _]) => marca);
+      const pasaMarca =
+        marcasSeleccionadas.length === 0 || marcasSeleccionadas.includes(producto.marca);
+
+      return pasaStock && pasaTipo && pasaMarca;
+    });
+  }
+
+  onFilterChange() {
+    this.filtrarProductos();
+  }
 
   closeModal() {
     this.isModalOpen = false;
   }
 
   guardarCambios() {
-    // Aquí va la lógica para guardar los cambios (ej: enviar al backend)
-    console.log('Producto guardado:', this.producto);
-    // Aquí podrías distinguir entre nuevo o editado si lo deseas
-
-    this.mostrarToast('Producto guardado con éxito');
-    
-    this.closeModal();
-  }
-
-  // Abrir modal con producto vacío (para nuevo)
-nuevoProducto() {
-  this.producto = {
-    tipo_producto: '',
-    nombre: '',
-    descripcion: '',
-    precio: 0,
-    imagen: '',
-    marca: '',
-    cantidad: 0
-  };
-  this.isModalOpen = true;
-}
-
-// Usar el mismo modal para editar
-openModal(productoExistente: any) {
-  this.producto = { ...productoExistente };
-  this.isModalOpen = true;
-}
-
-mostrarToast(mensaje: string) {
-  this.toastMessage = mensaje;
-  this.toastVisible = true;
-  setTimeout(() => {
-    this.toastVisible = false;
-  }, 3000);
-}
-
-  eliminarProducto(id: number) {
-  if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-    this.inventarioService.eliminarProducto(id).subscribe({
+    this.inventarioService.guardarProducto(this.producto).subscribe({
       next: () => {
-        // Quitar el producto del arreglo local
-        this.productos = this.productos.filter(p => p.id !== id);
-        this.filtrarProductos(); // Aplicar filtros actualizados
-        this.mostrarToast('Producto eliminado correctamente');
+        this.mostrarToast('Producto guardado con éxito');
+        this.closeModal();
+        this.cargarProductos();  // Recarga para ver cambios
       },
-      error: error => {
-        console.error('Error al eliminar producto:', error);
-        this.mostrarToast('Error al eliminar producto');
+      error: () => {
+        this.mostrarToast('Error al guardar el producto');
       }
     });
   }
-}
 
 
+  nuevoProducto() {
+    this.producto = {
+      id : -1,
+      tipoProducto: 0,
+      nombre: '',
+      descripcion: '',
+      precio: 0,
+      imagen: '',
+      marca: '',
+      cantidad: 0,
+    };
+    this.isModalOpen = true;
+  }
+
+  openModal(productoExistente: Producto) {
+    this.producto = { ...productoExistente };
+    this.isModalOpen = true;
+  }
+
+  mostrarToast(mensaje: string) {
+    this.toastMessage = mensaje;
+    this.toastVisible = true;
+    setTimeout(() => {
+      this.toastVisible = false;
+    }, 3000);
+  }
+
+  eliminarProducto(id: number) {
+    if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+      this.inventarioService.eliminarProducto(id).subscribe({
+        next: () => {
+          this.mostrarToast('Producto eliminado correctamente');
+          this.cargarProductos();
+          this.filtrarProductos();
+        },
+        error: () => {
+          this.mostrarToast('Error al eliminar producto');
+        },
+      });
+    }
+  }
 }

@@ -263,10 +263,100 @@ app.delete('/api/productos/:id', (req, res) => {
       console.error('Error al eliminar producto:', err);
       res.status(500).send('Error al eliminar el producto');
     } else {
-      res.json({ mensaje: 'Producto eliminado exitosamente' });
+      res.sendStatus(200);
     }
   });
 });
+
+// Endpoint para obtener tipos de producto
+app.get('/api/tipos_producto', (req, res) => {
+  const query = `SELECT id_tipo, tipo FROM tipo_producto`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener tipos de producto:', err);
+      return res.status(500).send('Error del servidor');
+    }
+    res.json(results);
+  });
+});
+
+// Endpoint para obtener productos con filtros
+app.get('/api/productos', (req, res) => {
+  // Leer filtros desde query params
+  const { inStock, tipoProducto, marca } = req.query;
+
+  // Construir query dinámico según filtros
+  let condiciones = [];
+  let params = [];
+
+  if (inStock === 'true') {
+    condiciones.push('p.cantidad > 0');
+  }
+
+  if (tipoProducto) {
+    condiciones.push('p.tipo_producto = ?');
+    params.push(tipoProducto);
+  }
+
+  if (marca) {
+    condiciones.push('p.marca = ?');
+    params.push(marca);
+  }
+
+  let query = `
+    SELECT p.id_producto AS id,
+           p.nombre,
+           p.precio,
+           p.imagen,
+           p.descripcion,
+           p.tipo_producto AS tipo_producto,
+           p.marca,
+           p.cantidad
+    FROM producto p
+  `;
+
+  if (condiciones.length > 0) {
+    query += ' WHERE ' + condiciones.join(' AND ');
+  }
+
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error('Error al obtener productos:', err);
+      return res.status(500).send('Error del servidor');
+    }
+    res.json(results);
+  });
+});
+
+
+app.post('/api/productos', (req, res) => {
+  const { tipoProducto, nombre, descripcion, precio, imagen, marca, cantidad } = req.body;
+  const query = `INSERT INTO productos (tipo_producto, nombre, descripcion, precio, imagen, marca, cantidad) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  db.query(query, [tipoProducto, nombre, descripcion, precio, imagen, marca, cantidad], (err, result) => {
+    if (err) {
+      console.error('Error al guardar producto:', err);
+      return res.status(500).send('Error al guardar');
+    }
+    res.status(201).send('Producto guardado');
+  });
+});
+
+app.put('/api/productos/:id', (req, res) => {
+  const { tipoProducto, nombre, descripcion, precio, imagen, marca, cantidad } = req.body;
+  const id = req.params.id;
+  const query = `
+    UPDATE productos 
+    SET tipo_producto = ?, nombre = ?, descripcion = ?, precio = ?, imagen = ?, marca = ?, cantidad = ?
+    WHERE id = ?`;
+  db.query(query, [tipoProducto, nombre, descripcion, precio, imagen, marca, cantidad, id], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar producto:', err);
+      return res.status(500).send('Error al actualizar');
+    }
+    res.send('Producto actualizado');
+  });
+});
+
 
 // Iniciar el servidor
 app.listen(port, () => {

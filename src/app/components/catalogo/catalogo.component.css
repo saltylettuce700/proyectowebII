@@ -28,6 +28,7 @@
   .catalogo-content {
     display: flex;
     gap: 20px;
+    align-items: stretch;
   }
   
   /* FILTROS (30%) */
@@ -103,6 +104,7 @@
     flex-wrap: wrap;
     gap: 15px;
     max-height: 100vh; /* Limita la altura de los productos */
+    align-items: flex-start;
     overflow-y: auto; /* Habilita el desplazamiento vertical */
 }
   

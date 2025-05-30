@@ -18,7 +18,14 @@ export class CatalogoService {
   constructor(private http: HttpClient) { }
 
   obtenerProductos(): Observable<Producto[]> {
+    // Si quieres filtrar en backend, puedes agregar params aquí y usar HttpParams
     return this.http.get<Producto[]>(this.apiUrl);
+  }
+
+  obtenerTiposProducto(): Observable<{ id_tipo: number; tipo: string }[]> {
+    return this.http.get<{ id_tipo: number; tipo: string }[]>(
+      'http://localhost:4242/api/tipos_producto'
+    );
   }
 
 }

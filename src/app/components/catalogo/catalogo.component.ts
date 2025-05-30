@@ -24,21 +24,39 @@ import { FormsModule } from '@angular/forms';
   
 })
 export class CatalogoComponent implements OnInit{
-  productos : any[] = [];
+  //productos : any[] = [];
 
   toastVisible: boolean = false;
   toastMessage: string = '';
 
-  productosFiltrados: Producto[] = []; // Variable para los productos filtrados
+  productos: Producto[] = [];
+  productosFiltrados: Producto[] = [];
 
-  productTypes = [1, 2, 3, 4]; // Valores numéricos para tipoProducto
-  brands = [1, 2, 3, 4]; // Valores numéricos para marca
+  tiposProductoDisponibles: { id_tipo: number; tipo: string }[] = [];
+  marcasDisponibles: string[] = [];
 
-  selectedProductTypes: { [key: number]: boolean } = {}; // Filtro numérico
-  selectedBrands: { [key: number]: boolean } = {}; // Filtro numérico
-  inStock: boolean = false; // Filtro para disponibilidad en stock
+  // Filtros con checkbox: 
+  filtroSoloStock: boolean = false;
 
+  // Diccionarios para checkbox múltiples (tipo producto y marcas)
+  selectedProductTypes: { [key: number]: boolean } = {};
+  selectedBrands: { [key: string]: boolean } = {};
 
+  isModalOpen: boolean = false;
+
+  producto: Producto = {
+    id: -1,
+    tipoProducto: 0,
+    nombre: '',
+    descripcion: '',
+    precio: 0,
+    imagen: '',
+    marca: '',
+    cantidad: 0,
+  };
+
+  cargando: boolean = false;
+  error: string = '';
 
   constructor(
     private catalogoService : CatalogoService,
@@ -47,56 +65,81 @@ export class CatalogoComponent implements OnInit{
   ){}
 
   ngOnInit(): void {
-    this.catalogoService.obtenerProductos().subscribe({
-      next: data => {
-        this.productos = data;
-        this.productosFiltrados = [...this.productos];
-      },
-
-      error: error => {
-        console.error(error.message);
-      }
-    });
-
-    // Inicializa los filtros en falso
-    this.productTypes.forEach(type => this.selectedProductTypes[type] = false);
-    this.brands.forEach(brand => this.selectedBrands[brand] = false);
-
+    this.cargarFiltros();
+    this.cargarProductos();
   }
 
-   // Método para filtrar productos
-filtrarProductos() {
-  console.log('Filtros seleccionados:');
-  console.log('In stock:', this.inStock);
-  console.log('Tipos seleccionados:', this.selectedProductTypes);
-  console.log('Marcas seleccionadas:', this.selectedBrands);
+  cargarFiltros() {
+    this.catalogoService.obtenerTiposProducto().subscribe({
+      next: (tipos) => {
+        this.tiposProductoDisponibles = tipos;
+        // Inicializar selectedProductTypes con false
+        tipos.forEach((tipo) => {
+          this.selectedProductTypes[tipo.id_tipo] = false;
+        });
+      },
+      error: () => (this.error = 'Error cargando tipos de producto'),
+    });
+  }
 
-  // Filtrar productos
-  this.productosFiltrados = this.productos.filter((producto) => {
-    // Filtrar por existencia en stock
-    const inStockFilter = this.inStock ? producto.cantidad > 0 : true;
+  cargarProductos() {
+    this.cargando = true;
+    this.error = '';
 
-    // Filtrar por tipo de producto
-    const typeFilter = Object.keys(this.selectedProductTypes).some(
-      (key) => this.selectedProductTypes[parseInt(key)] && producto.tipoProducto === parseInt(key)
-    );
+    this.catalogoService.obtenerProductos().subscribe({
+      next: (productos: any[]) => {
+        this.productos = productos;
+        this.productosFiltrados = productos;
 
-    // Filtrar por marca
-    const brandFilter = Object.keys(this.selectedBrands).some(
-      (key) => this.selectedBrands[parseInt(key)] && producto.marca === parseInt(key)
-    );
+        // Extraer marcas únicas para filtro
+        const marcasSet = new Set(productos.map((p) => p.marca));
+        this.marcasDisponibles = Array.from(marcasSet).sort();
 
-    // Retornar si el producto cumple con todos los filtros
-    return inStockFilter && typeFilter && brandFilter;
-  });
+        // Inicializar selectedBrands con false para cada marca
+        this.marcasDisponibles.forEach((marca) => {
+          this.selectedBrands[marca] = false;
+        });
 
-  console.log('Productos filtrados:', this.productosFiltrados);
-}
-  
-    // Llamado a este método cuando un filtro cambia
-    onFilterChange() {
-      this.filtrarProductos();
-    }
+        this.cargando = false;
+      },
+      error: () => {
+        this.error = 'Error cargando productos';
+        this.cargando = false;
+      },
+    });
+  }
+
+  // Filtra productos según filtros activos
+  filtrarProductos() {
+    this.productosFiltrados = this.productos.filter((producto) => {
+      // Filtro stock
+      const pasaStock = this.filtroSoloStock ? producto.cantidad > 0 : true;
+
+      // Filtro tipo producto (al menos uno seleccionado)
+      const tiposSeleccionados = Object.entries(this.selectedProductTypes)
+        .filter(([_, checked]) => checked)
+        .map(([key, _]) => Number(key));
+      const pasaTipo =
+        tiposSeleccionados.length === 0 || tiposSeleccionados.includes(Number(producto.tipoProducto));
+
+      // Filtro marca (al menos una seleccionada)
+      const marcasSeleccionadas = Object.entries(this.selectedBrands)
+        .filter(([_, checked]) => checked)
+        .map(([marca, _]) => marca);
+      const pasaMarca =
+        marcasSeleccionadas.length === 0 || marcasSeleccionadas.includes(producto.marca);
+
+      return pasaStock && pasaTipo && pasaMarca;
+    });
+  }
+
+  onFilterChange() {
+    this.filtrarProductos();
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
 
   agregarAlCarrito(producto:any){
     this.carritoService.agregarProducto(producto);

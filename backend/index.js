@@ -254,6 +254,20 @@ app.post('/api/recuperar-contrasena', (req, res) => {
   });
 });
 
+app.delete('/api/productos/:id', (req, res) => {
+  const id = req.params.id;
+  const query = 'DELETE FROM producto WHERE id_producto = ?';
+
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar producto:', err);
+      res.status(500).send('Error al eliminar el producto');
+    } else {
+      res.json({ mensaje: 'Producto eliminado exitosamente' });
+    }
+  });
+});
+
 // Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

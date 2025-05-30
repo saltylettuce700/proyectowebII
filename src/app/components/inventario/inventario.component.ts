@@ -142,6 +142,22 @@ mostrarToast(mensaje: string) {
   }, 3000);
 }
 
-  
+  eliminarProducto(id: number) {
+  if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+    this.inventarioService.eliminarProducto(id).subscribe({
+      next: () => {
+        // Quitar el producto del arreglo local
+        this.productos = this.productos.filter(p => p.id !== id);
+        this.filtrarProductos(); // Aplicar filtros actualizados
+        this.mostrarToast('Producto eliminado correctamente');
+      },
+      error: error => {
+        console.error('Error al eliminar producto:', error);
+        this.mostrarToast('Error al eliminar producto');
+      }
+    });
+  }
+}
+
 
 }

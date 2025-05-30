@@ -7,6 +7,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class InventarioService {
+  crearProducto(producto: Producto): Observable<any> {
+    return this.http.post(this.apiUrl, producto);
+  }
+
   private apiUrl = 'http://localhost:4242/api/productos';
 
   constructor(private http: HttpClient) {}
@@ -27,13 +31,17 @@ export class InventarioService {
   }
 
   guardarProducto(producto: Producto): Observable<any> {
-  if (producto.id === -1) {
-    // Crear nuevo
-    return this.http.post(this.apiUrl, producto);
-  } else {
-    // Actualizar existente
+    if (producto.id === -1) {
+      // Crear nuevo
+      return this.http.post(this.apiUrl, producto);
+    } else {
+      // Actualizar existente
+      return this.http.put(`${this.apiUrl}/${producto.id}`, producto);
+    }
+  }
+
+  actualizarProducto(producto: Producto): Observable<any> {
     return this.http.put(`${this.apiUrl}/${producto.id}`, producto);
   }
-}
 
 }

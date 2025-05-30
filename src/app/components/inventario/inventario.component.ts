@@ -16,6 +16,8 @@ export class InventarioComponent implements OnInit {
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
 
+  modoEdicion: boolean = false;
+
   tiposProductoDisponibles: { id_tipo: number; tipo: string }[] = [];
   marcasDisponibles: string[] = [];
 
@@ -124,38 +126,59 @@ export class InventarioComponent implements OnInit {
     this.isModalOpen = false;
   }
 
-  guardarCambios() {
-    this.inventarioService.guardarProducto(this.producto).subscribe({
-      next: () => {
-        this.mostrarToast('Producto guardado con éxito');
-        this.closeModal();
-        this.cargarProductos();  // Recarga para ver cambios
-      },
-      error: () => {
-        this.mostrarToast('Error al guardar el producto');
-      }
-    });
+  guardarProducto() {
+    // Clonamos el producto para no modificar el original
+    const productoAEnviar = { ...this.producto };
+
+    if (productoAEnviar.id === -1) {
+      // Si es nuevo, eliminamos el id para que no se envíe
+      delete (productoAEnviar as any).id;
+      this.inventarioService.crearProducto(productoAEnviar).subscribe({
+        next: () => {
+          this.mostrarToast('Producto creado con éxito');
+          this.closeModal();
+          this.cargarProductos();
+        },
+        error: () => {
+          this.mostrarToast('Error al crear producto');
+        }
+      });
+    } else {
+      // Si ya existe, actualizamos
+      this.inventarioService.actualizarProducto(productoAEnviar).subscribe({
+        next: () => {
+          this.mostrarToast('Producto actualizado con éxito');
+          this.closeModal();
+          this.cargarProductos();
+        },
+        error: () => {
+          this.mostrarToast('Error al actualizar producto');
+        }
+      });
+    }
   }
 
 
   nuevoProducto() {
-    this.producto = {
-      id : -1,
-      tipoProducto: 0,
-      nombre: '',
-      descripcion: '',
-      precio: 0,
-      imagen: '',
-      marca: '',
-      cantidad: 0,
-    };
-    this.isModalOpen = true;
-  }
+  this.producto = {
+    id: -1,
+    tipoProducto: 0,
+    nombre: '',
+    descripcion: '',
+    precio: 0,
+    imagen: '',
+    marca: '',
+    cantidad: 0,
+  };
+  this.modoEdicion = false;
+  this.isModalOpen = true;
+}
 
-  openModal(productoExistente: Producto) {
-    this.producto = { ...productoExistente };
-    this.isModalOpen = true;
-  }
+  openModal(producto: Producto) {
+  this.producto = { ...producto };
+  this.modoEdicion = true;
+  this.isModalOpen = true;
+}
 
   mostrarToast(mensaje: string) {
     this.toastMessage = mensaje;

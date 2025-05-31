@@ -18,6 +18,8 @@ export class CarritoComponent {
   subtotal: number = 0;
   iva: number = 0;
   total: number = 0;
+  mostrarXML: boolean = false;
+
 
   constructor(
     private carritoService: CarritoService,
@@ -57,10 +59,20 @@ export class CarritoComponent {
     this.actualizarCarrito();
   }
   
-    agregarProducto(producto: any) {
+    /*agregarProducto(producto: any) {
       this.carritoService.agregarProducto(producto);
       this.actualizarCarrito();
+    }*/
+
+    agregarProducto(producto: any) {
+      const agregado = this.carritoService.agregarProducto(producto);
+      if (agregado) {
+        this.actualizarCarrito();
+      } else {
+        alert('No hay suficiente stock para agregar ese producto.');
+      }
     }
+
     
     reducirProducto(producto: any) {
       this.carritoService.reducirProducto(producto);
@@ -73,7 +85,7 @@ export class CarritoComponent {
   }
 
   irAlCatalogo(){
-    this.router.navigate([''])
+    this.router.navigate(['/catalogo'])
   }
 
   verificarEstadoPago() {
@@ -82,8 +94,11 @@ export class CarritoComponent {
 
     if (status === 'success') {
       alert('¡Pago exitoso! Gracias por tu compra.');
+      this.mostrarXML = true;
       this.carritoService.vaciarCarrito();
       this.actualizarCarrito();
+      //this.mostrarXML = true;
+      //this.actualizarStockYMostrarXML();
       this.router.navigate([], { queryParams: {} }); 
     }
 
@@ -97,13 +112,16 @@ export class CarritoComponent {
 }
 
 
+
+
   finalizarPedido() {
-    
     const carrito = this.carritoService.obtenerCarrito();
     const carritoFormateado = carrito.map(item => ({
       id_producto: item.producto.id,
       cantidad: item.cantidad
     }));
+
+    
 
     this.http.post('http://localhost:3000/create-checkout-session', { carrito: carritoFormateado })
       .subscribe({
@@ -124,6 +142,28 @@ export class CarritoComponent {
         }
       });
   }
+
+  /*actualizarStockYMostrarXML() {
+  const carrito = this.carritoService.obtenerCarrito();
+  const productos = carrito.map(item => ({
+    id_producto: item.producto.id,
+    cantidad: item.cantidad
+  }));
+
+  this.http.post('http://localhost:3000/resta-stock', { productos }).subscribe({
+    next: () => {
+      alert('Stock actualizado y compra finalizada.');
+
+      this.carritoService.vaciarCarrito();
+      this.actualizarCarrito();
+      this.mostrarXML = true;
+    },
+    error: (err) => {
+      console.error('Error al actualizar el stock:', err);
+      alert('Hubo un error al actualizar el inventario. Por favor contacta al administrador.');
+    }
+  });
+}*/
 
 
 }

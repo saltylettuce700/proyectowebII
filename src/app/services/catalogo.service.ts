@@ -27,5 +27,6 @@ export class CatalogoService {
       'http://localhost:4242/api/tipos_producto'
     );
   }
+  
 
 }

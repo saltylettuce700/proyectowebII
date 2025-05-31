@@ -141,11 +141,22 @@ export class CatalogoComponent implements OnInit{
     this.isModalOpen = false;
   }
 
-  agregarAlCarrito(producto:any){
+  /*agregarAlCarrito(producto:any){
     this.carritoService.agregarProducto(producto);
     this.mostrarToast('Producto agregado al carrito!');
 
+  }*/
+
+  agregarAlCarrito(producto: any) {
+    const agregado = this.carritoService.agregarProducto(producto);
+    
+    if (!agregado) {
+      alert('No hay suficiente stock para este producto.');
+    }else{
+      this.mostrarToast('Producto agregado al carrito!');
+    }
   }
+
  
   irAlCarrito(){
     this.router.navigate(['/carrito']);

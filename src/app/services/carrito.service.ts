@@ -27,7 +27,7 @@ export class CarritoService {
     return [...this.carrito]; // Copia para evitar referencias directas
   }
 
-  agregarProducto(producto: any) {
+  /*agregarProducto(producto: any) {
     const item = this.carrito.find(i => i.producto.id === producto.id);
     if (item) {
       item.cantidad++;
@@ -35,7 +35,35 @@ export class CarritoService {
       this.carrito.push({ producto: { ...producto, precio: Number(producto.precio) }, cantidad: 1 });
     }
     this.guardarCarrito();
-  }
+  }*/
+
+    agregarProducto(producto: any): boolean {
+      const item = this.carrito.find(i => i.producto.id === producto.id);
+
+      // Si ya existe el producto en el carrito
+      if (item) {
+        // Verificar si hay suficiente stock disponible
+        if (item.cantidad + 1 > producto.cantidad) {
+          console.warn('No hay suficiente stock para agregar otro de este producto.');
+          return false;
+        }
+        item.cantidad++;
+      } else {
+        // Si se va a agregar por primera vez, verificar que haya al menos 1 en stock
+        if (producto.cantidad < 1) {
+          console.warn('No hay stock disponible para este producto.');
+          return false;
+        }
+        this.carrito.push({
+          producto: { ...producto, precio: Number(producto.precio) },
+          cantidad: 1
+        });
+      }
+
+      this.guardarCarrito();
+      return true;
+    }
+
 
   reducirProducto(producto: any) {
     const index = this.carrito.findIndex(item => item.producto.id === producto.id);

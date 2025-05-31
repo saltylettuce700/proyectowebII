@@ -24,7 +24,7 @@ db.connect(err => {
 });
 
 // RUTA para obtener los productos
-app.get('/api/productos', (req, res) => {
+/*app.get('/api/productos', (req, res) => {
   const query = `
     SELECT p.id_producto AS id,
            p.nombre,
@@ -45,7 +45,7 @@ app.get('/api/productos', (req, res) => {
     }
   });
 });
-
+*/
 //Crear Pedido
 
 app.post('/procesar-pago', async (req, res) => {
@@ -357,6 +357,75 @@ app.put('/api/productos/:id', (req, res) => {
     res.status(200).json({ mensaje: 'Producto actualizado con éxito' });
   });
 });
+
+/*app.post('/restar-stock', (req, res) => {
+  const productos = req.body.productos; // [{ id_producto, cantidad }, ...]
+  
+  productos.forEach(async (p) => {
+    await db.query(`
+      UPDATE producto
+      SET cantidad = cantidad - ?
+      WHERE id = ?`, [p.cantidad, p.id_producto]
+    );
+  });
+
+  res.json({ message: 'Stock actualizado' });
+});*/
+
+app.post('/resta-stock', (req, res) => {
+  
+  const productos = req.body.productos; // Array con objetos { id_producto, cantidad }
+  console.log('Productos que se mandan al backend:', productos);
+  if (!Array.isArray(productos) || productos.length === 0) {
+    return res.status(400).json({ error: 'No se enviaron productos para restar stock' });
+  }
+
+  // Función para procesar cada producto secuencialmente
+  const procesarProducto = (index) => {
+    if (index >= productos.length) {
+      // Terminamos todo
+      return res.json({ mensaje: 'Stock actualizado correctamente' });
+    }
+
+    const p = productos[index];
+
+    // Primero obtener cantidad actual
+    db.query(`SELECT cantidad FROM producto WHERE id_producto = ?`, [p.id_producto], (err, results) => {
+      if (err) {
+        console.error('Error al consultar producto:', err);
+        return res.status(500).json({ error: 'Error interno al consultar producto' });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ error: `Producto con id ${p.id_producto} no encontrado` });
+      }
+
+      const cantidadActual = results[0].cantidad;
+
+      if (cantidadActual < p.cantidad) {
+        return res.status(400).json({ error: `No hay suficiente stock para el producto id ${p.id_producto}` });
+      }
+
+      // Restar la cantidad
+      db.query(
+        `UPDATE producto SET cantidad = cantidad - ? WHERE id_producto = ?`,
+        [p.cantidad, p.id_producto],
+        (err, result) => {
+          if (err) {
+            console.error('Error al actualizar stock:', err);
+            return res.status(500).json({ error: 'Error interno al actualizar stock' });
+          }
+
+          // Continuar con siguiente producto
+          procesarProducto(index + 1);
+        }
+      );
+    });
+  };
+
+  procesarProducto(0);
+});
+
 
 
 // Iniciar el servidor

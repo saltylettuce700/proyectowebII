@@ -74,7 +74,7 @@ export class InventarioComponent implements OnInit {
     this.inventarioService.obtenerProductos().subscribe({
       next: (productos: any[]) => {
         this.productos = productos;
-        this.productosFiltrados = productos;
+        this.filtrarProductos();
 
         // Extraer marcas únicas para filtro
         const marcasSet = new Set(productos.map((p) => p.marca));
@@ -131,7 +131,9 @@ export class InventarioComponent implements OnInit {
     const productoAEnviar = { ...this.producto };
 
     if (productoAEnviar.id === -1) {
-      // Si es nuevo, eliminamos el id para que no se envíe
+      // Validación al crear
+      if (!this.esProductoValido()) return;
+
       delete (productoAEnviar as any).id;
       this.inventarioService.crearProducto(productoAEnviar).subscribe({
         next: () => {
@@ -144,12 +146,15 @@ export class InventarioComponent implements OnInit {
         }
       });
     } else {
-      // Si ya existe, actualizamos
+      // Validación al editar
+      if (!this.esProductoValido()) return;
+
       this.inventarioService.actualizarProducto(productoAEnviar).subscribe({
         next: () => {
           this.mostrarToast('Producto actualizado con éxito');
           this.closeModal();
           this.cargarProductos();
+          this.filtrarProductos();
         },
         error: () => {
           this.mostrarToast('Error al actualizar producto');
@@ -157,6 +162,8 @@ export class InventarioComponent implements OnInit {
       });
     }
   }
+
+
 
 
   nuevoProducto() {
@@ -202,4 +209,25 @@ export class InventarioComponent implements OnInit {
       });
     }
   }
+
+  esProductoValido(): boolean {
+    const p = this.producto;
+
+    if (
+      !p.nombre.trim() ||
+      !p.descripcion.trim() ||
+      p.precio <= 0 ||
+      !p.imagen.trim() ||
+      !p.marca.trim() ||
+      p.cantidad <= 0 ||
+      p.cantidad == null||
+      p.tipoProducto === 0
+    ) {
+      this.mostrarToast('Por favor, completa todos los campos correctamente y selecciona un tipo de producto.');
+      return false;
+    }
+
+    return true;
+  }
+
 }

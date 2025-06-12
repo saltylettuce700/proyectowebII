@@ -1,0 +1,50 @@
+<div class="pagina-home">
+  <!-- 🖼 CARRUSEL -->
+  <div class="carrusel">
+    <img [src]="imagenes[imagenActual]" alt="Imagen destacada" class="carrusel-img" />
+    <div class="carrusel-texto">huge stationery haul</div>
+
+    <div class="controles-carrusel">
+  <button (click)="anterior()">‹</button>
+  <button (click)="siguiente()">›</button>
+</div>
+
+  </div>
+
+  <!-- 🛍 PRODUCTOS DESTACADOS -->
+  <section class="seccion-productos">
+    <h2 class="titulo-seccion rosa">Zebra Mildliners 2025 Set está AQUÍ</h2>
+    <div class="grid-productos">
+      <div class="card-producto" *ngFor="let producto of productosZebra">
+  <img [src]="producto.imagen" alt="{{ producto.nombre }}" class="imagen-producto" />
+  <h4>{{ producto.nombre }}</h4>
+</div>
+
+    </div>
+  </section>
+
+  <section class="seccion-productos">
+    <h2 class="titulo-seccion rosa">Pon en marcha tu Journall!</h2>
+    <div class="grid-productos">
+      <div class="card-producto" *ngFor="let producto of productosZebra">
+  <img [src]="producto.imagen" alt="{{ producto.nombre }}" class="imagen-producto" />
+  <h4>{{ producto.nombre }}</h4>
+</div>
+
+    </div>
+  </section>
+
+  <!-- 💬 TESTIMONIOS -->
+  <section class="seccion-testimonios">
+    <div class="testimonio-card" *ngFor="let t of testimonios">
+      <div class="usuario">
+        <div class="avatar"></div>
+        <div>
+          <strong>{{ t.nombre }}</strong><br />
+          <span class="handle">{{ t.handle }}</span>
+        </div>
+      </div>
+      <p>{{ t.comentario }}</p>
+    </div>
+  </section>
+</div>

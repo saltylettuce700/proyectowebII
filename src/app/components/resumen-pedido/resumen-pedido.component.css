@@ -1,0 +1,97 @@
+.detalle-pedido-container {
+  font-family: 'Inter', sans-serif;
+  padding: 2rem 5vw;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+.breadcrumb a {
+  color: #0094ff;
+  text-decoration: none;
+}
+
+.pedido-title {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.tabla-detalle,
+.tabla-productos {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 2rem;
+}
+
+.tabla-detalle {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tabla-productos {
+  grid-template-columns: 1fr 2fr 3fr 1fr 1fr;
+}
+
+.cell {
+  background-color: #f5f5f5;
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 0.95rem;
+  word-break: break-word;
+  text-align: center;
+}
+
+.cell.header {
+  font-weight: bold;
+  background-color: #ececec;
+}
+
+.producto-img {
+  width: 48px;
+  height: auto;
+  border-radius: 6px;
+}
+
+.totales {
+  max-width: 400px;
+  margin-left: auto;
+  font-size: 1rem;
+}
+
+.linea {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.4rem 0;
+}
+
+.linea.total {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.monto.rojo {
+  color: #e53935;
+}
+
+.boton-xml {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.btn-xml {
+  background: #f28b8b;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 2rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+.btn-xml:hover {
+  background: #e06262;
+}

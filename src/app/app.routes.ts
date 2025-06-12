@@ -6,6 +6,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { CambiopasswordComponent } from './components/cambiopassword/cambiopassword.component';
 import { InventarioService } from './services/inventario.service';
 import { InventarioComponent } from './components/inventario/inventario.component';
+import { AccountComponent } from './components/account/account.component';
 
 
 export const routes: Routes = [
@@ -19,4 +20,5 @@ export const routes: Routes = [
     {path: 'catalogo', component : CatalogoComponent},
     { path: 'cambiopassword', component: CambiopasswordComponent },
     {path: 'inventario', component : InventarioComponent},
+    {path: 'account', component : AccountComponent},
 ];

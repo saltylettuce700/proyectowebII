@@ -11,6 +11,8 @@ import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component'; 
 
 import { FormsModule } from '@angular/forms'; 
+import { ActivatedRoute } from '@angular/router';
+
 
 
 @Component({
@@ -19,6 +21,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './catalogo.component.html',
   styleUrl: './catalogo.component.css',
   standalone: true,
+  
   
 
   
@@ -61,26 +64,37 @@ export class CatalogoComponent implements OnInit{
   constructor(
     private catalogoService : CatalogoService,
     private carritoService : CarritoService,
-    private router : Router
+    private router : Router,
+    private route: ActivatedRoute
   ){}
 
   ngOnInit(): void {
-    this.cargarFiltros();
-    this.cargarProductos();
-  }
+  this.route.queryParams.subscribe(params => {
+    const filtroTipo = params['tipo'];
+    this.cargarFiltros(filtroTipo);
+  });
 
-  cargarFiltros() {
-    this.catalogoService.obtenerTiposProducto().subscribe({
-      next: (tipos) => {
-        this.tiposProductoDisponibles = tipos;
-        // Inicializar selectedProductTypes con false
-        tipos.forEach((tipo) => {
-          this.selectedProductTypes[tipo.id_tipo] = false;
-        });
-      },
-      error: () => (this.error = 'Error cargando tipos de producto'),
-    });
-  }
+  this.cargarProductos();
+}
+
+
+  cargarFiltros(filtroPreseleccionado?: string) {
+  this.catalogoService.obtenerTiposProducto().subscribe({
+    next: (tipos) => {
+      this.tiposProductoDisponibles = tipos;
+
+      tipos.forEach((tipo) => {
+        const nombreNormalizado = tipo.tipo.toLowerCase().replace(/\s/g, '');
+        const esSeleccionado = filtroPreseleccionado === nombreNormalizado;
+        this.selectedProductTypes[tipo.id_tipo] = esSeleccionado;
+      });
+
+      this.filtrarProductos(); // Aplica filtro tras carga
+    },
+    error: () => (this.error = 'Error cargando tipos de producto'),
+  });
+}
+
 
   cargarProductos() {
     this.cargando = true;
@@ -173,6 +187,9 @@ export class CatalogoComponent implements OnInit{
     this.toastVisible = false;
   }, 3000);
 }
+
+
+
 
 
 }

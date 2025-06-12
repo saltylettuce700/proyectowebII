@@ -38,7 +38,8 @@
     <!-- Nivel inferior -->
     <div class="nav-bottom">
       <div class="nav-links">
-        <a *ngFor="let enlace of enlaces" [routerLink]="enlace.url">{{ enlace.texto }}</a>
+        <a *ngFor="let enlace of enlaces" (click)="navegarConFiltro(enlace)">{{ enlace.texto }}</a>
+
       </div>
     </div>
   </nav>

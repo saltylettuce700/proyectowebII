@@ -86,3 +86,14 @@
   
  
 
+.nav-links a {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s;
+   color: #ffffff;
+}
+
+.nav-links a:hover {
+  color: #9a00c9; /* Puedes cambiar el color al que prefieras */
+}

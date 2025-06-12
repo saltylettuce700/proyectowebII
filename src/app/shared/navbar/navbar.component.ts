@@ -57,4 +57,8 @@ export class NavbarComponent {
   irAlCarrito() {
     this.router.navigate(['/carrito']);
   }
+
+  irAccount() {
+    this.router.navigate(['/account']);
+  }
 }

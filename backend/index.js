@@ -309,7 +309,7 @@ app.get('/api/productos', (req, res) => {
            p.precio,
            p.imagen,
            p.descripcion,
-           p.tipo_producto AS tipo_producto,
+           p.tipo_producto AS tipoProducto,
            p.marca,
            p.cantidad
     FROM producto p

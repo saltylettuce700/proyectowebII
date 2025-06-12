@@ -1,33 +1,41 @@
 <div class="account-container">
-  <!-- 🧭 Navegación -->
-  <div class="breadcrumb">
-    <a href="/">Home</a> / <span>Cuenta</span>
-  </div>
+  <div class="breadcrumb"><a href="/">Home</a> / <span>Cuenta</span></div>
 
-  <!-- 🙋‍♂️ Sección de cuenta -->
   <section class="account-section">
     <div class="account-header">
       <h2>Tu Cuenta</h2>
-      <button class="logout-btn">Cerrar Sesión</button>
+      <button class="logout-btn" (click)="cerrarSesion()">Cerrar Sesión</button>
     </div>
 
     <div class="account-grid">
+      <!-- Fila de headers -->
       <div class="account-cell header">Email</div>
-      <div class="account-cell header">Dirección</div>
       <div class="account-cell header">Nombre</div>
+      <div class="account-cell header">Dirección</div>
+      <div class="account-cell header">CP</div>
       <div class="account-cell header">Pedidos</div>
 
-      <div class="account-cell">juanito&#64;gmail.com</div>
+      <!-- Fila de valores -->
+      <div class="account-cell">{{ email }}</div>
+      <div class="account-cell">{{ nombreCompleto }}</div>
       <div class="account-cell with-icon">
-        Paseo San Arturo Pte 910, Valle Real, 45019 Zapopan, Jal.
+        {{ direccion }}
         <span class="edit-icon" (click)="abrirDireccionModal()">✏️</span>
       </div>
-      <div class="account-cell">Juanito Gonzalez</div>
-      <div class="account-cell">2 pedidos</div>
+      <div class="account-cell with-icon">
+        {{ cp }}
+        <span class="edit-icon" (click)="abrirCpModal()">✏️</span>
+      </div>
+      <div class="account-cell">{{totalPedidos}} pedidos</div>
+    </div>
+
+
+
+    <div style="margin-top: 1rem">
+      <button class="btn-save" (click)="abrirPasswordModal()">Cambiar Contraseña</button>
     </div>
   </section>
 
-  <!-- 📦 Sección de pedidos -->
   <section class="orders-section">
     <h2>Pedidos</h2>
     <div class="orders-grid">
@@ -35,39 +43,25 @@
       <div class="order-cell header">Dirección</div>
       <div class="order-cell header">Más</div>
 
-      <div class="order-cell">2187631</div>
-      <div class="order-cell">
-        Paseo San Arturo Pte 910, Valle Real, 45019 Zapopan, Jal.
-      </div>
-      <div class="order-cell">
-        <a href="#" class="details-link">Ver Detalles</a>
-      </div>
-
-      <div class="order-cell">874893</div>
-      <div class="order-cell">
-        Paseo San Arturo Pte 910, Valle Real, 45019 Zapopan, Jal.
-      </div>
-      <div class="order-cell">
-        <a href="#" class="details-link">Ver Detalles</a>
+      <div *ngFor="let pedido of pedidos" class="order-row">
+        <div class="order-cell">{{ pedido.id_pedido }}</div>
+        <div class="order-cell">{{ pedido.direccion + " " + pedido.cp }}</div>
+        <div class="order-cell">
+          <a href="#" class="details-link">Ver Detalles</a>
+        </div>
       </div>
     </div>
   </section>
 </div>
 
-<!-- 🌐 Modal de edición de dirección -->
+<!-- Modal Dirección -->
 <div class="modal-overlay" *ngIf="isDireccionModalOpen" (click)="cerrarDireccionModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <h2>Editar Dirección</h2>
-    <form (ngSubmit)="guardarNuevaDireccion()" #formDireccion="ngForm">
+    <form (ngSubmit)="guardarNuevaDireccion()">
       <div class="form-group">
         <label>Nueva Dirección</label>
-        <textarea 
-          name="nuevaDireccion" 
-          
-          required 
-          rows="3"
-          placeholder="Escribe tu nueva dirección completa"
-        ></textarea>
+        <textarea name="nuevaDireccion" [(ngModel)]="nuevaDireccion" required rows="3"></textarea>
       </div>
       <div class="form-actions">
         <button type="button" class="btn-cancel" (click)="cerrarDireccionModal()">Cancelar</button>
@@ -77,3 +71,37 @@
   </div>
 </div>
 
+
+<!-- Modal Password -->
+<div class="modal-overlay" *ngIf="isPasswordModalOpen" (click)="cerrarPasswordModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Cambiar Contraseña</h2>
+    <form (ngSubmit)="guardarNuevoPassword()">
+      <div class="form-group">
+        <label>Nueva Contraseña</label>
+        <input type="password" [(ngModel)]="nuevoPassword" name="nuevoPassword" required />
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="cerrarPasswordModal()">Cancelar</button>
+        <button type="submit" class="btn-save">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal CP -->
+<div class="modal-overlay" *ngIf="isCpModalOpen" (click)="cerrarCpModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Editar Código Postal</h2>
+    <form (ngSubmit)="guardarNuevoCp()">
+      <div class="form-group">
+        <label>Nuevo Código Postal</label>
+        <input name="nuevoCp" [(ngModel)]="nuevoCp" required maxlength="10" />
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="cerrarCpModal()">Cancelar</button>
+        <button type="submit" class="btn-save">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>

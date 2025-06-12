@@ -59,8 +59,7 @@
           <img [src]="producto.imagen" alt="{{ producto.nombre }}" />
           <p>{{ producto.nombre }}</p>
           <span>${{ producto.precio }}</span>
-          <br>
-          <br>
+          <p>Existencias:{{ producto.cantidad }}</p>
           <button class="edit-btn" (click)="openModal(producto)">Edit</button>
           <button class="delete-btn" (click)="eliminarProducto(producto.id)">🗑️</button>
         </div>

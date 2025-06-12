@@ -51,10 +51,11 @@
       <div class="productos">
         <div *ngFor="let producto of productosFiltrados" class="producto-card">
           <img [src]="producto.imagen" alt="{{ producto.nombre }}" />
-          <p>{{ producto.nombre }}</p>
-          <span>${{ producto.precio }}</span>
-          <br>
-          <br>
+          <div class="producto-info">
+            <p>{{ producto.nombre }}</p>
+            <span>${{ producto.precio }}</span>
+            <p>Existencias: {{ producto.cantidad }}</p>
+          </div>
           <button class="add-btn" (click)="agregarAlCarrito(producto)">Añadir al Carrito</button>
         </div>
       </div>

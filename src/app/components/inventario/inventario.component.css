@@ -85,6 +85,8 @@
     padding: 20px;
     border-radius: 10px;
     text-align: center;
+    min-width: 200px;
+    height: 320px;
   }
   
   .producto-card img {

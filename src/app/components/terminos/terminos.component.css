@@ -1,0 +1,43 @@
+.terminos-container {
+  padding: 3rem 5vw;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+  color: #222;
+  line-height: 1.7;
+}
+
+.terminos-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.terminos-fecha {
+  color: #888;
+  margin-bottom: 2rem;
+}
+
+section {
+  margin-bottom: 2rem;
+}
+
+section h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #7e57c2;
+}
+
+ul {
+  padding-left: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+ul li {
+  margin-bottom: 0.4rem;
+}
+
+a {
+  color: #7e57c2;
+  text-decoration: underline;
+}

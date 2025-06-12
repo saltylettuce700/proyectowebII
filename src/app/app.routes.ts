@@ -12,6 +12,9 @@ import { UsuariosAdminComponent } from './components/usuarios-admin/usuarios-adm
 import { PedidosAdminComponent } from './components/pedidos-admin/pedidos-admin.component';
 import { ResumenPedidoComponent } from './components/resumen-pedido/resumen-pedido.component';
 import { HomeComponent } from './components/home/home.component';
+import { AboutComponent } from './components/about/about.component';
+import { TerminosComponent } from './components/terminos/terminos.component';
+import { PrivacidadComponent } from './components/privacidad/privacidad.component';
 
 
 export const routes: Routes = [
@@ -30,4 +33,7 @@ export const routes: Routes = [
     {path: 'pedidos', component : PedidosAdminComponent},
     {path: 'resumenpedidos', component : ResumenPedidoComponent},
     {path: 'home', component : HomeComponent},
+    {path: 'about', component : AboutComponent},
+    {path: 'terminos', component : TerminosComponent},
+    {path: 'aviso', component : PrivacidadComponent},
 ];

@@ -39,7 +39,7 @@ export class NavbarComponent {
       { texto: 'Plumones', url: '/plumones' },
       { texto: 'Plumas', url: '/plumas' },
       { texto: 'Cintas', url: '/cintas' },
-      { texto: 'Sobre Nosotros', url: '/sobre-nosotros' }
+      { texto: 'Sobre Nosotros', url: '/about' }
     ];
 
     if (rol === 'admin') {

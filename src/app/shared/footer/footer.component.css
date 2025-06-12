@@ -6,3 +6,19 @@
     color: white;
   }
   
+  .footer-btn {
+  background-color: #e0b3ff;
+  color: #ffffff;
+  font-family: 'Jura';
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.footer-btn:hover {
+  background-color: #d08afc;
+  color: white;
+}

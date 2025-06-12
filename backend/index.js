@@ -5,7 +5,11 @@ const app = express();
 const port = 4242;
 
 app.use(express.json());
-app.use(cors()); // Permitir peticiones desde Angular
+app.use(cors({
+  origin: 'http://localhost:4200', // Asegúrate que coincida con tu puerto de Angular
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+})); // Permitir peticiones desde Angular
 
 // Conexión a MySQL
 const db = mysql.createConnection({
@@ -50,11 +54,12 @@ db.connect(err => {
 
 app.post('/procesar-pago', async (req, res) => {
   console.log('Body recibido:', req.body);
-  const { carrito } = req.body;
+  const { carrito, email } = req.body;
 
-  const usuarioId = "a21300624@ceti.mx"; // Temporal, luego lo obtendrás del token o sesión
-  const estado = "no pagado";
+  const usuarioId = email; // Temporal, luego lo obtendrás del token o sesión
+  const estado = "pagado";
   const fecha = new Date();
+  
   console.log('Insertando pedido con estado:', estado);
   // Paso 0: Obtener dirección y cp del usuario
   const queryUsuario = `SELECT direccion, cp FROM usuario WHERE email = ?`;
@@ -358,75 +363,54 @@ app.put('/api/productos/:id', (req, res) => {
   });
 });
 
-/*app.post('/restar-stock', (req, res) => {
-  const productos = req.body.productos; // [{ id_producto, cantidad }, ...]
-  
-  productos.forEach(async (p) => {
-    await db.query(`
-      UPDATE producto
-      SET cantidad = cantidad - ?
-      WHERE id = ?`, [p.cantidad, p.id_producto]
-    );
-  });
+app.post('/api/restar-stock', (req, res) => {
+  const productos = req.body.productos;
 
-  res.json({ message: 'Stock actualizado' });
-});*/
-
-app.post('/resta-stock', (req, res) => {
-  
-  const productos = req.body.productos; // Array con objetos { id_producto, cantidad }
-  console.log('Productos que se mandan al backend:', productos);
-  if (!Array.isArray(productos) || productos.length === 0) {
-    return res.status(400).json({ error: 'No se enviaron productos para restar stock' });
+  if (!Array.isArray(productos)) {
+    return res.status(400).json({ error: 'Formato inválido' });
   }
 
-  // Función para procesar cada producto secuencialmente
-  const procesarProducto = (index) => {
-    if (index >= productos.length) {
-      // Terminamos todo
-      return res.json({ mensaje: 'Stock actualizado correctamente' });
-    }
-
-    const p = productos[index];
-
-    // Primero obtener cantidad actual
-    db.query(`SELECT cantidad FROM producto WHERE id_producto = ?`, [p.id_producto], (err, results) => {
-      if (err) {
-        console.error('Error al consultar producto:', err);
-        return res.status(500).json({ error: 'Error interno al consultar producto' });
-      }
-
-      if (results.length === 0) {
-        return res.status(404).json({ error: `Producto con id ${p.id_producto} no encontrado` });
-      }
-
-      const cantidadActual = results[0].cantidad;
-
-      if (cantidadActual < p.cantidad) {
-        return res.status(400).json({ error: `No hay suficiente stock para el producto id ${p.id_producto}` });
-      }
-
-      // Restar la cantidad
+  const updates = productos.map(item => {
+    return new Promise((resolve, reject) => {
       db.query(
-        `UPDATE producto SET cantidad = cantidad - ? WHERE id_producto = ?`,
-        [p.cantidad, p.id_producto],
+        'UPDATE producto SET cantidad = cantidad - ? WHERE id_producto = ?',
+        [item.cantidad, item.id_producto],
         (err, result) => {
-          if (err) {
-            console.error('Error al actualizar stock:', err);
-            return res.status(500).json({ error: 'Error interno al actualizar stock' });
-          }
-
-          // Continuar con siguiente producto
-          procesarProducto(index + 1);
+          if (err) reject(err);
+          else resolve(result);
         }
       );
     });
-  };
+  });
 
-  procesarProducto(0);
+  Promise.all(updates)
+    .then(() => res.json({ mensaje: 'Stock actualizado' }))
+    .catch(err => {
+      console.error('Error al actualizar stock:', err);
+      res.status(500).json({ error: 'Error al actualizar stock' });
+    });
 });
 
+app.get('/api/usuario-info/:email', async (req, res) => {
+  const email = req.params.email;
 
+  try {
+    const [rows] = await db.promise().query(
+      'SELECT nombre, apellido FROM usuario WHERE email = ?',
+      [email]
+    );
+
+    if (!rows || rows.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const { nombre, apellido } = rows[0];
+    res.json({ nombre, apellido });
+  } catch (error) {
+    console.error('Error al buscar usuario:', error);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+});
 
 // Iniciar el servidor
 app.listen(port, () => {

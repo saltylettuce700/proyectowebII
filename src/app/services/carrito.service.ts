@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Producto } from '../models/producto';
+import { HttpClient } from '@angular/common/http';
+import { Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+
 
 @Injectable({
   providedIn: 'root'
@@ -8,18 +12,27 @@ export class CarritoService {
 
   private carrito: any[] = [];
 
-  constructor() {
-    this.obtenerCarrito();
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {  // <-- inyectar HttpClient aquí
+    this.cargarCarrito();
   }
 
   private guardarCarrito() {
-    localStorage.setItem('carrito', JSON.stringify(this.carrito));
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('carrito', JSON.stringify(this.carrito));
+    }
+    //localStorage.setItem('carrito', JSON.stringify(this.carrito));
   }
 
   cargarCarrito() {
-    const data = localStorage.getItem('carrito');
+    /*const data = localStorage.getItem('carrito');
     if (data) {
       this.carrito = JSON.parse(data);
+    }*/
+    if (isPlatformBrowser(this.platformId)) {
+      const data = localStorage.getItem('carrito');
+      if (data) {
+        this.carrito = JSON.parse(data);
+      }
     }
   }
 
@@ -83,11 +96,30 @@ export class CarritoService {
     this.guardarCarrito();
   }
 
-  generarXML(): string {
+  obtenerNombreCompleto(email: string): Promise<string> {
+    console.log("Email del usuario:", email);
+    return this.http
+      .get<{ nombre: string, apellido: string }>(`http://localhost:4242/api/usuario-info/${email}`)
+      .toPromise()
+      .then(res => {
+        if (!res) {
+        return 'Nombre desconocido';
+      }
+      return `${res.nombre} ${res.apellido}`;
+    }); //`${res.nombre} ${res.apellido}`);
+  }
+
+  async generarXML(): Promise<string> {
     let fecha = new Date().toISOString().split("T")[0];
     let folio = 123;
-    let clienteNombre = "Dana Dafne Mora Vazquez";
-    let clienteEmail = "dana.dafne@gmail.com";
+    let clienteEmail = '';
+     if (isPlatformBrowser(this.platformId)) {
+        clienteEmail = localStorage.getItem('email') || '';
+      } else {
+        console.warn('localStorage no está disponible en el servidor');
+      }
+    const clienteNombre = await this.obtenerNombreCompleto(clienteEmail);
+    
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<factura>\n`;
 
@@ -133,6 +165,8 @@ export class CarritoService {
     return xml;
   }
 
+  
+
   descargarxml(xml: string, fileName: string) {
     const blob = new Blob([xml], { type: 'application/xml' });
     const url = URL.createObjectURL(blob);
@@ -143,8 +177,13 @@ export class CarritoService {
     a.click();
     document.body.removeChild(a);
   }
+
   vaciarCarrito() {
     this.carrito = [];
-    localStorage.removeItem('carrito');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('carrito');
+    }
+    //localStorage.removeItem('carrito');
   }
+
 }

@@ -46,6 +46,8 @@ export class NavbarComponent {
       this.enlaces = [
         ...enlacesBase.slice(0, 6),
         { texto: 'Inventario', url: '/inventario' },
+        { texto: 'Usuarios', url: '/usuarios' },
+        { texto: 'Pedidos', url: '/pedidos' },
         enlacesBase[6]
       ];
     } else {

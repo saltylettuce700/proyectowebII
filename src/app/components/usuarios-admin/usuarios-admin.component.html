@@ -1,0 +1,57 @@
+<div class="page-wrapper">
+  <div class="usuarios-container">
+  <!-- 🧭 Navegación -->
+  <div class="breadcrumb">
+    <a href="/">Home</a> / <span>Cuenta</span>
+  </div>
+
+  <!-- 👥 Título -->
+  <h2 class="usuarios-title">Usuarios</h2>
+
+  <!-- 🧾 Tabla de usuarios -->
+  <div class="usuarios-grid">
+    <div class="usuario-cell header">Email</div>
+    <div class="usuario-cell header">Contraseña</div>
+    <div class="usuario-cell header">Dirección</div>
+    <div class="usuario-cell header">Nombre</div>
+    <div class="usuario-cell header">Pedidos</div>
+    <div class="usuario-cell header">Editar</div>
+
+    <!-- Ejemplo fila 1 -->
+    <div class="usuario-cell">juanito&#64;gmail.com</div>
+    <div class="usuario-cell">Paseo San Arturo Pte 910, Valle Real, 45019 Zapopan, Jal.</div>
+    <div class="usuario-cell">Juanito Gonzalez</div>
+    <div class="usuario-cell">7c4a8d09ca3762af61e59520943dc26494f8941b</div>
+    <div class="usuario-cell">5 pedidos</div>
+    <div class="usuario-cell">
+      <button class="delete-btn" (click)="eliminarUsuario()">🗑️</button>
+    </div>
+
+    <!-- Ejemplo fila 2 -->
+    <div class="usuario-cell">gusgus&#64;gmail.com</div>
+    <div class="usuario-cell">c3bc1d808e04734679965ccc34ca7a3441</div>
+    <div class="usuario-cell">Agustín Vallejos</div>
+    <div class="usuario-cell">Av. Aviación 4180, San Juan de Ocotán, 45019 Zapopan, Jal.</div>
+    <div class="usuario-cell">7 pedidos</div>
+    <div class="usuario-cell">
+      <button class="delete-btn" (click)="eliminarUsuario()">🗑️</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<!-- 🧾 Modal de confirmación de eliminación -->
+<div class="modal-overlay" *ngIf="isDeleteModalOpen" (click)="cancelarEliminacion()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>¿Eliminar usuario?</h2>
+    <p>¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.</p>
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="cancelarEliminacion()">Cancelar</button>
+      <button class="btn-delete" (click)="confirmarEliminacion()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+

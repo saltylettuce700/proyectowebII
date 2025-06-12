@@ -1,0 +1,91 @@
+<div class="admin-pedidos-container">
+  <!-- 🧭 Navegación -->
+  <div class="breadcrumb">
+    <a href="/">Home</a> / <span>Cuenta</span>
+  </div>
+
+  <!-- 📋 Título -->
+  <h2 class="titulo-pedidos">Pedidos</h2>
+
+  <!-- 🧾 Tabla de pedidos -->
+  <div class="tabla-pedidos">
+    <div class="pedido-cell header">ID</div>
+    <div class="pedido-cell header">Timestamp</div>
+    <div class="pedido-cell header">Usuario</div>
+    <div class="pedido-cell header">Dirección</div>
+    <div class="pedido-cell header">Más</div>
+    <div class="pedido-cell header">Estado</div>
+    <div class="pedido-cell header">Editar</div>
+
+    <!-- Fila 1 -->
+    <div class="pedido-cell">2187631</div>
+    <div class="pedido-cell">16-03-2025</div>
+    <div class="pedido-cell">anito&#64;gmail.com</div>
+    <div class="pedido-cell">45019 Zapopan Jal.</div>
+    <div class="pedido-cell"><a href="#" class="link-detalles">Ver Detalles</a></div>
+    <div class="pedido-cell estado entregado">Entregado</div>
+    <div class="pedido-cell acciones">
+      <button class="icon-btn editar-btn" (click)="editarPedido()">✏️</button>
+      <button class="icon-btn eliminar-btn" (click)="eliminarPedido()">🗑️</button>
+    </div>
+
+    <!-- Fila 2 -->
+    <div class="pedido-cell">3872466</div>
+    <div class="pedido-cell">10-03-2025</div>
+    <div class="pedido-cell">isgus&#64;gmail.com</div>
+    <div class="pedido-cell">Paseo San Arturo Pte 910, Valle Real, 45019 Zapopan, Jal.</div>
+    <div class="pedido-cell"><a href="#" class="link-detalles">Ver Detalles</a></div>
+    <div class="pedido-cell estado enproceso">En proceso</div>
+    <div class="pedido-cell acciones">
+      <button class="icon-btn editar-btn" (click)="editarPedido()">✏️</button>
+      <button class="icon-btn eliminar-btn" (click)="eliminarPedido()">🗑️</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ✏️ Modal de edición de pedido -->
+<div class="modal-overlay" *ngIf="isEditModalOpen" (click)="cerrarModalEdicion()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Editar Pedido</h2>
+    <form (ngSubmit)="guardarEdicionPedido()" #formPedido="ngForm">
+      <div class="form-group">
+        <label>Timestamp</label>
+        <input type="date"  name="timestamp" required />
+      </div>
+      <div class="form-group">
+        <label>Usuario</label>
+        <input type="email"  name="usuario" required />
+      </div>
+      <div class="form-group">
+        <label>Dirección</label>
+        <textarea  name="direccion" rows="2" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select  name="estado" required>
+          <option value="En proceso">En proceso</option>
+          <option value="Entregado">Entregado</option>
+          <option value="Cancelado">Cancelado</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="cerrarModalEdicion()">Cancelar</button>
+        <button type="submit" class="btn-save">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- 🗑️ Modal de confirmación -->
+<div class="modal-overlay" *ngIf="isDeleteModalOpen" (click)="cancelarEliminacion()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>¿Eliminar pedido?</h2>
+    <p>¿Estás seguro de que deseas eliminar este pedido? Esta acción no se puede deshacer.</p>
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="cancelarEliminacion()">Cancelar</button>
+      <button class="btn-delete" (click)="confirmarEliminacion()">Eliminar</button>
+    </div>
+  </div>
+</div>

@@ -8,6 +8,9 @@ import { InventarioService } from './services/inventario.service';
 import { InventarioComponent } from './components/inventario/inventario.component';
 import { AccountComponent } from './components/account/account.component';
 
+import { UsuariosAdminComponent } from './components/usuarios-admin/usuarios-admin.component';
+import { PedidosAdminComponent } from './components/pedidos-admin/pedidos-admin.component';
+
 
 export const routes: Routes = [
 
@@ -21,4 +24,6 @@ export const routes: Routes = [
     { path: 'cambiopassword', component: CambiopasswordComponent },
     {path: 'inventario', component : InventarioComponent},
     {path: 'account', component : AccountComponent},
+    {path: 'usuarios', component : UsuariosAdminComponent},
+    {path: 'pedidos', component : PedidosAdminComponent},
 ];

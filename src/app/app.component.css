@@ -1,0 +1,17 @@
+router-outlet {
+  display: block !important;
+  width: 100%;
+  min-height: 0;         /* importante si flexbox está involucrado */
+  margin: 0;
+  padding: 0;
+}
+
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+router-outlet + * {
+  flex: 1 1 auto;
+}

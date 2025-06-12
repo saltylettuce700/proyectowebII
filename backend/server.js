@@ -128,7 +128,7 @@ app.post('/create-checkout-session', async (req, res) => {
 
           
           const session = await stripe.checkout.sessions.create({
-            customer_email: 'customer@example.com',
+            customer_email: req.body.email,
             submit_type: 'pay',
             billing_address_collection: 'auto',
             metadata: { idpedido: data.idPedido },

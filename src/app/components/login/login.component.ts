@@ -41,8 +41,8 @@ export class LoginComponent {
 
     this.loginService.login(email, password).subscribe({
       next: (res) => {
-        sessionStorage.setItem('email', email);
-        sessionStorage.setItem('rol', res.rol);
+        localStorage.setItem('email', email);
+        localStorage.setItem('rol', res.rol);
         this.router.navigate(['/catalogo']);
       },
       error: (err) => {

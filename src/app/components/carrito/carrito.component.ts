@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { CatalogoService } from '../../services/catalogo.service';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-carrito',
@@ -20,20 +22,31 @@ export class CarritoComponent {
   total: number = 0;
   mostrarXML: boolean = false;
 
+  toastVisible: boolean = false;
+  toastMessage: string = '';
 
   constructor(
     private carritoService: CarritoService,
     private catalogoService : CatalogoService,
     private http: HttpClient,
     private router : Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
-    this.carritoService.cargarCarrito();
-    this.actualizarCarrito();
+    if (isPlatformBrowser(this.platformId)) {
+      this.carritoService.cargarCarrito();
+    }
+    //this.carritoService.cargarCarrito();
+    /*this.actualizarCarrito();
     console.log('Contenido del carrito:', this.carrito);
-    this.verificarEstadoPago();
+    this.verificarEstadoPago();*/
+    setTimeout(() => {
+      this.actualizarCarrito();
+      this.verificarEstadoPago();
+    }, 50);
+    
   }
 
   actualizarCarrito() {
@@ -47,9 +60,9 @@ export class CarritoComponent {
     this.total = this.subtotal + this.iva;
   }
 
-  generarXML() {
+  async generarXML() {
     console.log("Generando XML...");
-    const xml = this.carritoService.generarXML();
+    const xml = await this.carritoService.generarXML();
     console.log(xml);
     this.carritoService.descargarxml(xml, 'recibo.xml');
   }
@@ -69,7 +82,7 @@ export class CarritoComponent {
       if (agregado) {
         this.actualizarCarrito();
       } else {
-        alert('No hay suficiente stock para agregar ese producto.');
+        this.mostrarToast('No hay suficiente stock para agregar ese producto.');
       }
     }
 
@@ -94,9 +107,29 @@ export class CarritoComponent {
 
     if (status === 'success') {
       alert('¡Pago exitoso! Gracias por tu compra.');
-      this.mostrarXML = true;
+      const productos = this.carrito.map(item => ({
+        id_producto: item.producto.id,
+        cantidad: item.cantidad
+      }));
+
+      this.http.post('http://localhost:4242/api/restar-stock', { productos }).subscribe({
+        next: async () => {
+          //alert('Stock actualizado correctamente.');
+          const xml = await this.carritoService.generarXML();
+          this.carritoService.descargarxml(xml, 'recibo.xml');
+
+          this.carritoService.vaciarCarrito();
+          this.actualizarCarrito();
+          this.mostrarXML = true;
+        },
+        error: (err) => {
+          console.error('Error al actualizar el stock:', err);
+          this.mostrarToast('Hubo un error al actualizar el stock. Por favor contacta al administrador.');
+        }
+      });
+      /*this.mostrarXML = true;
       this.carritoService.vaciarCarrito();
-      this.actualizarCarrito();
+      this.actualizarCarrito();*/
       //this.mostrarXML = true;
       //this.actualizarStockYMostrarXML();
       this.router.navigate([], { queryParams: {} }); 
@@ -121,9 +154,12 @@ export class CarritoComponent {
       cantidad: item.cantidad
     }));
 
-    
+    const email = localStorage.getItem('email');
 
-    this.http.post('http://localhost:3000/create-checkout-session', { carrito: carritoFormateado })
+    this.http.post('http://localhost:3000/create-checkout-session', { 
+      carrito: carritoFormateado, 
+      email: email
+    })
       .subscribe({
         next: (res: any) => {
           console.log('Pedido procesado con éxito', res);
@@ -165,5 +201,12 @@ export class CarritoComponent {
   });
 }*/
 
+  mostrarToast(mensaje: string) {
+    this.toastMessage = mensaje;
+    this.toastVisible = true;
+    setTimeout(() => {
+      this.toastVisible = false;
+    }, 3000);
+  }
 
 }

@@ -1,0 +1,114 @@
+.pagina-home {
+  font-family: 'Inter', sans-serif;
+  padding: 2rem 5vw;
+}
+
+/* Carrusel */
+.carrusel {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+}
+.carrusel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.carrusel-texto {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* Sección de productos */
+.seccion-productos {
+  margin-bottom: 3rem;
+}
+.titulo-seccion {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+.rosa {
+  color: #e91e63;
+  font-family: 'Jura';
+}
+
+.grid-productos {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.card-producto {
+  background: #f5f5f5;
+  border-radius: 16px;
+  padding: 1rem;
+  text-align: center;
+  transition: box-shadow 0.2s;
+}
+.card-producto:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.imagen-producto {
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  border-radius: 16px;
+  object-fit: cover;
+  margin-bottom: 0.8rem;
+}
+
+/* Testimonios */
+.seccion-testimonios {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.testimonio-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 1.2rem;
+  width: 300px;
+}
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  background: #ddd;
+  border-radius: 50%;
+}
+.handle {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.controles-carrusel {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+.controles-carrusel button {
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+}

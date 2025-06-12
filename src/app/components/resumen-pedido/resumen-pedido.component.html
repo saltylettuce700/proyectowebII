@@ -1,0 +1,62 @@
+<div class="detalle-pedido-container">
+  <!-- 🧭 Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="/">Home</a> / <span>Cuenta</span>
+  </div>
+
+  <!-- 🧾 Encabezado de Pedido -->
+  <h2 class="pedido-title">Pedido - ID {{ pedido.id }}</h2>
+
+  <div class="tabla-detalle">
+    <div class="cell header">Fecha de creación</div>
+    <div class="cell header">Email Usuario</div>
+    <div class="cell header">Dirección</div>
+
+    <div class="cell">{{ pedido.fecha }}</div>
+    <div class="cell">{{ pedido.email }}</div>
+    <div class="cell">{{ pedido.direccion }}</div>
+  </div>
+
+  <hr />
+
+  <!-- 🛒 Productos del Pedido -->
+  <div class="tabla-productos">
+    <div class="cell header">Image</div>
+    <div class="cell header">Product</div>
+    <div class="cell header">Description</div>
+    <div class="cell header">Price</div>
+    <div class="cell header">Quantity</div>
+
+    <ng-container *ngFor="let producto of pedido.productos">
+      <div class="cell">
+        <img [src]="producto.imagen" alt="Producto" class="producto-img" />
+      </div>
+      <div class="cell">{{ producto.nombre }}</div>
+      <div class="cell">{{ producto.descripcion }}</div>
+      <div class="cell">{{ producto.precio | currency:'MXN' }}</div>
+      <div class="cell">{{ producto.cantidad }}</div>
+    </ng-container>
+  </div>
+
+  <!-- Totales -->
+  <div class="totales">
+    <div class="linea">
+      <strong>Subtotal</strong>
+      <span class="monto rojo">{{ pedido.subtotal | currency:'MXN' }}</span>
+    </div>
+    <div class="linea">
+      <strong>IVA</strong>
+      <span class="monto rojo">{{ pedido.iva | currency:'MXN' }}</span>
+    </div>
+    <hr />
+    <div class="linea total">
+      <strong>Total</strong>
+      <span class="monto rojo">{{ pedido.total | currency:'MXN' }}</span>
+    </div>
+  </div>
+
+  <!-- 📄 Botón XML -->
+  <div class="boton-xml">
+    <button class="btn-xml">XML</button>
+  </div>
+</div>

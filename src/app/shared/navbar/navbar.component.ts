@@ -63,4 +63,8 @@ export class NavbarComponent {
   irAccount() {
     this.router.navigate(['/account']);
   }
+
+  irHome() {
+    this.router.navigate(['/home']);
+  }
 }

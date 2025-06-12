@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 interface NavLink {
   texto: string;
   url: string;
+  filtro?: string;
 }
 
 @Component({
@@ -15,46 +16,38 @@ interface NavLink {
   styleUrl: './navbar.component.css',
   standalone: true
 })
-/*export class NavbarComponent {
-  constructor(private router: Router) {}
-
-  irAlCarrito() {
-    this.router.navigate(['/carrito']);
-  }
-}*/
-
 export class NavbarComponent {
   enlaces: NavLink[] = [];
 
   constructor(private router: Router) {}
 
   ngOnInit() {
-  if (typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
-    const rol = sessionStorage.getItem('rol');
+    if (typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
+      const rol = sessionStorage.getItem('rol');
 
-    const enlacesBase: NavLink[] = [
-      { texto: 'Catálogo', url: '/catalogo' },
-      { texto: 'Stickers', url: '/stickers' },
-      { texto: 'Lápices', url: '/lapices' },
-      { texto: 'Plumones', url: '/plumones' },
-      { texto: 'Plumas', url: '/plumas' },
-      { texto: 'Cintas', url: '/cintas' },
-      { texto: 'Sobre Nosotros', url: '/about' }
-    ];
-
-    if (rol === 'admin') {
-      this.enlaces = [
-        ...enlacesBase.slice(0, 6),
-        { texto: 'Inventario', url: '/inventario' },
-        { texto: 'Usuarios', url: '/usuarios' },
-        { texto: 'Pedidos', url: '/pedidos' },
-        enlacesBase[6]
+      const enlacesBase: NavLink[] = [
+        { texto: 'Catálogo', url: '/catalogo' },
+        { texto: 'Stickers', url: '/catalogo', filtro: 'stickers' },
+        { texto: 'Lápices', url: '/catalogo', filtro: 'lapices' },
+        { texto: 'Plumones', url: '/catalogo', filtro: 'plumones' },
+        { texto: 'Plumas', url: '/catalogo', filtro: 'plumas' },
+        { texto: 'Cintas', url: '/catalogo', filtro: 'cintas' },
+        { texto: 'Sobre Nosotros', url: '/about' }
       ];
-    } else {
-      this.enlaces = enlacesBase;
+
+      if (rol === 'admin') {
+        this.enlaces = [
+          ...enlacesBase.slice(0, 6),
+          { texto: 'Inventario', url: '/inventario' },
+          { texto: 'Usuarios', url: '/usuarios' },
+          { texto: 'Pedidos', url: '/pedidos' },
+          enlacesBase[6]
+        ];
+      } else {
+        this.enlaces = enlacesBase;
+      }
     }
   }
-}
 
   irAlCarrito() {
     this.router.navigate(['/carrito']);
@@ -66,5 +59,13 @@ export class NavbarComponent {
 
   irHome() {
     this.router.navigate(['/home']);
+  }
+
+  navegarConFiltro(enlace: NavLink) {
+    if (enlace.filtro) {
+      this.router.navigate([enlace.url], { queryParams: { tipo: enlace.filtro } });
+    } else {
+      this.router.navigate([enlace.url]);
+    }
   }
 }

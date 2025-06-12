@@ -544,6 +544,33 @@ app.post('/api/actualizar-cp', (req, res) => {
 });
 
 
+// GET /api/pedido-detalle/:id
+app.get('/api/pedido-detalle/:id', async (req, res) => {
+  const id_pedido = req.params.id;
+  const [pedidoRows] = await db.promise().query(`
+    SELECT p.fec_creacion, u.email, p.direccion, p.cp, p.subtotal, p.total 
+    FROM pedido p 
+    JOIN usuario u ON p.usuario = u.email 
+    WHERE p.id_pedido = ?`, [id_pedido]);
+
+  const [productosRows] = await db.promise().query(`
+    SELECT pp.id_producto, pr.nombre, pp.cantidad, pp.subtotal, pr.imagen, pr.descripcion 
+    FROM pedido_producto pp 
+    JOIN producto pr ON pp.id_producto = pr.id_producto 
+    WHERE pp.id_pedido = ?`, [id_pedido]);
+
+    if (pedidoRows.length === 0) {
+      return res.status(404).json({ error: 'Pedido no encontrado' });
+    }
+
+  res.json({
+    ...pedidoRows[0],
+    productos : productosRows
+  });
+});
+
+
+
 // Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

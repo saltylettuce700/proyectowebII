@@ -47,7 +47,7 @@
         <div class="order-cell">{{ pedido.id_pedido }}</div>
         <div class="order-cell">{{ pedido.direccion + " " + pedido.cp }}</div>
         <div class="order-cell">
-          <a href="#" class="details-link">Ver Detalles</a>
+          <button class="btn-verDetalles" (click)="verDetalles(pedido)">Ver Detalles</button>
         </div>
       </div>
     </div>

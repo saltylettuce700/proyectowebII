@@ -23,7 +23,7 @@ export class NavbarComponent {
 
   ngOnInit() {
     if (typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
-      const rol = sessionStorage.getItem('rol');
+      const rol = localStorage.getItem('rol');
 
       const enlacesBase: NavLink[] = [
         { texto: 'Catálogo', url: '/catalogo' },
@@ -39,8 +39,8 @@ export class NavbarComponent {
         this.enlaces = [
           ...enlacesBase.slice(0, 6),
           { texto: 'Inventario', url: '/inventario' },
-          { texto: 'Usuarios', url: '/usuarios' },
-          { texto: 'Pedidos', url: '/pedidos' },
+          //{ texto: 'Usuarios', url: '/usuarios' },
+          //{ texto: 'Pedidos', url: '/pedidos' },
           enlacesBase[6]
         ];
       } else {

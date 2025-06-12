@@ -1,31 +1,29 @@
-<div class="detalle-pedido-container">
+<div class="detalle-pedido-container" *ngIf="pedido; else cargando">
   <!-- 🧭 Breadcrumb -->
   <div class="breadcrumb">
     <a href="/">Home</a> / <span>Cuenta</span>
   </div>
 
   <!-- 🧾 Encabezado de Pedido -->
-  <h2 class="pedido-title">Pedido - ID {{ pedido.id }}</h2>
+  <h2 class="pedido-title">Pedido</h2>
 
   <div class="tabla-detalle">
     <div class="cell header">Fecha de creación</div>
     <div class="cell header">Email Usuario</div>
     <div class="cell header">Dirección</div>
 
-    <div class="cell">{{ pedido.fecha }}</div>
+    <div class="cell">{{ pedido.fec_creacion | date:'dd/MM/yyyy'}}</div>
     <div class="cell">{{ pedido.email }}</div>
-    <div class="cell">{{ pedido.direccion }}</div>
+    <div class="cell">{{ pedido.direccion + " " + pedido.cp }}</div>
   </div>
-
-  <hr />
 
   <!-- 🛒 Productos del Pedido -->
   <div class="tabla-productos">
-    <div class="cell header">Image</div>
-    <div class="cell header">Product</div>
-    <div class="cell header">Description</div>
-    <div class="cell header">Price</div>
-    <div class="cell header">Quantity</div>
+    <div class="cell header">Imagen</div>
+    <div class="cell header">Producto</div>
+    <div class="cell header">Descripcion</div>
+    <div class="cell header">Subtotal</div>
+    <div class="cell header">Cantidad</div>
 
     <ng-container *ngFor="let producto of pedido.productos">
       <div class="cell">
@@ -33,7 +31,7 @@
       </div>
       <div class="cell">{{ producto.nombre }}</div>
       <div class="cell">{{ producto.descripcion }}</div>
-      <div class="cell">{{ producto.precio | currency:'MXN' }}</div>
+      <div class="cell">{{ producto.subtotal | currency:'MXN' }}</div>
       <div class="cell">{{ producto.cantidad }}</div>
     </ng-container>
   </div>
@@ -46,7 +44,7 @@
     </div>
     <div class="linea">
       <strong>IVA</strong>
-      <span class="monto rojo">{{ pedido.iva | currency:'MXN' }}</span>
+      <span class="monto rojo">{{ (pedido.subtotal * 0.16) | currency:'MXN' }}</span>
     </div>
     <hr />
     <div class="linea total">
@@ -54,9 +52,8 @@
       <span class="monto rojo">{{ pedido.total | currency:'MXN' }}</span>
     </div>
   </div>
-
-  <!-- 📄 Botón XML -->
-  <div class="boton-xml">
-    <button class="btn-xml">XML</button>
-  </div>
 </div>
+
+<ng-template #cargando>
+  <p>Cargando pedido...</p>
+</ng-template>

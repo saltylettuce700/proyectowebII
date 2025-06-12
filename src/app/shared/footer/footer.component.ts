@@ -15,7 +15,7 @@ export class FooterComponent {
   constructor(private router: Router) {}
 
   irPrivacidad() {
-    this.router.navigate(['/privacidad']);
+    this.router.navigate(['/aviso']);
   }
 
   irterminos() {

@@ -49,6 +49,18 @@
   background-color: #f0f0f0;
 }
 
+.btn-verDetalles{
+  padding: 0.6rem 1.2rem;
+  border: none;
+  font-family: 'Inter';
+  border-radius: 999px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #7e57c2;
+  margin-left: 60px;
+  color: white; 
+}
+
 
 .orders-grid {
   display: grid;

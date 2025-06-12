@@ -4,15 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, PLATFORM_ID } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-account',
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule,CommonModule, RouterModule],
   templateUrl: './account.component.html',
   standalone: true,
   styleUrl: './account.component.css'
 })
 export class AccountComponent {
+
+  detallePedido: any = null;
+
   email: string = '';
   nombreCompleto: string = '';
 
@@ -34,9 +39,9 @@ export class AccountComponent {
 
   nuevaDireccion: string = '';
   nuevoPassword: string = '';
-   nuevoCp: string = '';
+  nuevoCp: string = '';
 
-  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object, private router: Router) {}
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -156,5 +161,10 @@ mostrarToast(mensaje: string) {
     }, 3000);
   }
 
+  verDetalles(pedido: any) {
+    localStorage.setItem('pedido_detalle', JSON.stringify(pedido));
+    this.router.navigate(['/resumen-pedido', pedido.id_pedido]);
+  }
+  
 
 }

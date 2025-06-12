@@ -31,7 +31,7 @@ export const routes: Routes = [
     {path: 'account', component : AccountComponent},
     {path: 'usuarios', component : UsuariosAdminComponent},
     {path: 'pedidos', component : PedidosAdminComponent},
-    {path: 'resumenpedidos', component : ResumenPedidoComponent},
+    {path: 'resumen-pedido/:id', component : ResumenPedidoComponent},
     {path: 'home', component : HomeComponent},
     {path: 'about', component : AboutComponent},
     {path: 'terminos', component : TerminosComponent},

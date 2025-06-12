@@ -394,23 +394,155 @@ app.post('/api/restar-stock', (req, res) => {
 app.get('/api/usuario-info/:email', async (req, res) => {
   const email = req.params.email;
 
-  try {
-    const [rows] = await db.promise().query(
-      'SELECT nombre, apellido FROM usuario WHERE email = ?',
-      [email]
-    );
+  db.query(
+    'SELECT nombre, apellido FROM usuario WHERE email = ?',
+    [email],
+    (err, results) => {
+      if (err) {
+        console.error('Error al buscar usuario:', err);
+        return res.status(500).json({ error: 'Error del servidor' });
+      }
 
-    if (!rows || rows.length === 0) {
+      if (results.length === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      const { nombre, apellido } = results[0];
+      res.json({ nombre, apellido });
+    }
+  );
+});
+
+/*app.get('/api/cuenta', async (req, res) => {
+  const email = req.query.email;
+  if (!email) return res.status(400).json({ error: 'Email requerido' });
+
+  db.query('SELECT nombre, apellido, direccion, cp FROM usuario WHERE email = ?', [email], (err1, usuarioResult) => {
+    if (err1) return res.status(500).json({ error: 'Error al consultar usuario' });
+
+    if (usuarioResult.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+    const usuario = usuarioResult[0];
+
+    db.query('SELECT COUNT(*) AS totalPedidos FROM pedido WHERE usuario = ?', [email], (err2, countResult) => {
+      if (err2) return res.status(500).json({ error: 'Error al contar pedidos' });
+
+      const totalPedidos = countResult[0].totalPedidos;
+
+      db.query('SELECT id, direccion FROM pedido WHERE usuario = ?', [email], (err3, pedidos) => {
+        if (err3) return res.status(500).json({ error: 'Error al obtener pedidos' });
+
+        res.json({
+          nombreCompleto: `${usuario.nombre} ${usuario.apellido}`,
+          direccion: usuario.direccion,
+          cp: usuario.cp,
+          totalPedidos,
+          pedidos
+        });
+      });
+    });
+  });
+});*/
+
+/*app.get('/api/cuenta', async (req, res) => {
+  const email = req.query.email;
+
+  if (!email) {
+    return res.status(400).json({ error: 'Falta el email' });
+  }
+
+  try {
+    const [resultado] = await db.promise().query('SELECT * FROM usuario WHERE email = ?', [email]);
+
+    if (resultado.length === 0) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
-    const { nombre, apellido } = rows[0];
-    res.json({ nombre, apellido });
-  } catch (error) {
-    console.error('Error al buscar usuario:', error);
-    res.status(500).json({ error: 'Error del servidor' });
+    res.json(resultado[0]);
+  } catch (err) {
+    console.error('Error en /api/cuenta:', err);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
+});*/
+
+app.get('/api/cuenta', async (req, res) => {
+  const email = req.query.email;
+
+  if (!email) {
+    return res.status(400).json({ error: 'Falta el email' });
+  }
+
+  try {
+    const [usuarios] = await db.promise().query('SELECT * FROM usuario WHERE email = ?', [email]);
+
+    if (usuarios.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const usuario = usuarios[0];
+
+    const [pedidos] = await db.promise().query(
+      'SELECT * FROM pedido WHERE usuario = ? ORDER BY fec_creacion DESC',
+      [email]
+    );
+
+    usuario.pedidos = pedidos;
+    usuario.totalPedidos = pedidos.length;
+
+    res.json(usuario);
+  } catch (err) {
+    console.error('Error en /api/cuenta:', err);
+    res.status(500).json({ error: 'Error en el servidor' });
   }
 });
+
+
+
+// Cambiar contraseña
+app.post('/api/cambiar-password', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Faltan datos' });
+  }
+
+  const hashed = crypto.createHash('sha256').update(password).digest('hex');
+
+  db.query('UPDATE usuario SET password = ? WHERE email = ?', [hashed, email], (err2, result) => {
+    if (err2) return res.status(500).json({ error: 'Error al actualizar contraseña' });
+
+    res.json({ message: 'Contraseña actualizada' });
+  });
+});
+
+app.post('/api/actualizar-direccion', (req, res) => {
+  const { email, direccion } = req.body;
+
+  if (!email || !direccion) {
+    return res.status(400).json({ error: 'Faltan datos' });
+  }
+
+  db.query('UPDATE usuario SET direccion = ? WHERE email = ?', [direccion, email], (err, result) => {
+    if (err) return res.status(500).json({ error: 'Error al actualizar dirección' });
+
+    res.json({ message: 'Dirección actualizada' });
+  });
+});
+
+app.post('/api/actualizar-cp', (req, res) => {
+  const { email, cp } = req.body;
+
+  if (!email || !cp) {
+    return res.status(400).json({ error: 'Faltan datos' });
+  }
+
+  db.query('UPDATE usuario SET cp = ? WHERE email = ?', [cp, email], (err, result) => {
+    if (err) return res.status(500).json({ error: 'Error al actualizar CP' });
+
+    res.json({ message: 'CP actualizado' });
+  });
+});
+
 
 // Iniciar el servidor
 app.listen(port, () => {
